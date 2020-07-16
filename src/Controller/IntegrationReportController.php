@@ -5,8 +5,11 @@ namespace Drupal\integration_report\Controller;
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\integration_report\IntegrationReportHelperTrait;
+use Drupal\integration_report\IntegrationReportManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,6 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 class IntegrationReportController extends ControllerBase {
 
   use IntegrationReportHelperTrait;
+  use StringTranslationTrait;
 
   /**
    * The report manager.
@@ -25,6 +29,25 @@ class IntegrationReportController extends ControllerBase {
    * @var \Drupal\integration_report\IntegrationReportManager
    */
   protected $reportManager;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('integration_report.report_manager')
+    );
+  }
+
+  /**
+   * IntegrationReportController constructor.
+   *
+   * @param \Drupal\integration_report\IntegrationReportManager $report_manager
+   *   The report manager.
+   */
+  public function __construct(IntegrationReportManager $report_manager) {
+    $this->reportManager = $report_manager;
+  }
 
   /**
    * Displays a listing of database log messages.
@@ -41,7 +64,7 @@ class IntegrationReportController extends ControllerBase {
       '#theme' => 'table',
       '#header' => ['', 'Status type', 'Result'],
       '#rows' => [],
-      '#empty' => t('No reports found.'),
+      '#empty' => $this->t('No reports found.'),
       '#suffix' => '',
       '#attributes' => [
         'class' => [
@@ -55,7 +78,7 @@ class IntegrationReportController extends ControllerBase {
       ],
     ];
 
-    $reports = $this->getReportManager()->getReports();
+    $reports = $this->reportManager->getReports();
 
     foreach ($reports as $report) {
       $class_name = IntegrationReportHelperTrait::getShortClassName($report);
@@ -122,12 +145,12 @@ class IntegrationReportController extends ControllerBase {
           ],
           // Column 3: Response area.
           [
-            'data' => t('Loading...'),
+            'data' => $this->t('Loading...'),
             'class' => ['status-report-response'],
           ],
         ],
-        // Add the class name for the handler in the data-status-result attribute
-        // for the row for referencing by JavaScript.
+        // Add the class name for the handler in the data-status-result
+        // attribute for the row for referencing by JavaScript.
         'data-status-result' => $class_name,
         // By default all status rows start their life in amber mode.
         'class' => [
@@ -147,12 +170,13 @@ class IntegrationReportController extends ControllerBase {
    *   The request object.
    *
    * @return \Symfony\Component\HttpFoundation\Response
+   *   The response object.
    */
   public function jsCallback($report_class, Request $request) {
     // Sanitise class name.
     $class = Html::escape($report_class);
 
-    $report = $this->getReportManager()->findReport($class);
+    $report = $this->reportManager->findReport($class);
     if ($report) {
       $headers['Cache-Control'] = 'no-cache';
       $headers['Pragma'] = 'no-cache';
@@ -162,20 +186,7 @@ class IntegrationReportController extends ControllerBase {
       return $response;
     }
 
-    $this->getLogger('integration_report')->warning(t('Unable to instantiate status class @class in JS callback.', ['@class' => $report_class]));
-  }
-
-  /**
-   * Get report manager.
-   *
-   * @return \Drupal\integration_report\IntegrationReportManager
-   *   The report manager.
-   */
-  protected function getReportManager() {
-    if (!isset($this->reportManager)) {
-      $this->reportManager = \Drupal::getContainer()->get('integration_report.report_manager');
-    }
-    return $this->reportManager;
+    $this->getLogger('integration_report')->warning($this->t('Unable to instantiate status class @class in JS callback.', ['@class' => $report_class]));
   }
 
 }

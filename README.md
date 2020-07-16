@@ -7,7 +7,7 @@ Drupal module to report on availability status of 3-rd party endpoints.
 
 ## Why?
 If your website has 3rd party integration with one or multiple 3rd party
-services, such as API endpoints, this module allows to call the enpoints and
+services, such as API endpoints, this module allows to call the endpoints and
 see all the response information within a single page.
 
 You may also implement status check on behalf of any other Drupal module that

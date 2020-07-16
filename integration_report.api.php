@@ -5,9 +5,9 @@
  * Api documentation for Integration Report module.
  */
 
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\integration_report\IntegrationReport;
 use Symfony\Component\HttpFoundation\Response;
-
 
 /**
  * Integration Report Example class.
@@ -25,6 +25,8 @@ use Symfony\Component\HttpFoundation\Response;
 class MyModuleExampleIntegrationReport extends IntegrationReport {
 
   // @codingStandardsIgnoreEnd
+
+  use StringTranslationTrait;
 
   /**
    * Define the properties of the status.
@@ -50,10 +52,10 @@ class MyModuleExampleIntegrationReport extends IntegrationReport {
   public function info() {
     return [
       // Required parameters:
-      'name' => t('Status name'),
-      'description' => t('Status description'),
+      'name' => $this->t('Status name'),
+      'description' => $this->t('Status description'),
       // Optional parameters:
-//      'js' => drupal_get_path('module', 'example_module') . '/status/example-module-status.js',
+      'js' => drupal_get_path('module', 'example_module') . '/status/example-module-status.js',
       'secure_callback' => FALSE,
       'use_callback' => TRUE,
       'access' => TRUE,
@@ -81,13 +83,13 @@ class MyModuleExampleIntegrationReport extends IntegrationReport {
     // Check for a 200 response and the word 'domain' in the response.
     if ($response->getStatusCode() == Response::HTTP_OK && strpos($response->getBody(), 'domain') !== FALSE) {
       $success = TRUE;
-      $messages[] = t('@url was retrieved successfully.', [
+      $messages[] = $this->t('@url was retrieved successfully.', [
         '@url' => $url,
       ]);
     }
     else {
       $success = FALSE;
-      $messages[] = t('@url was not retrieved successfully.', [
+      $messages[] = $this->t('@url was not retrieved successfully.', [
         '@url' => $url,
       ]);
     }

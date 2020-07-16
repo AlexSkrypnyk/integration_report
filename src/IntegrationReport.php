@@ -3,6 +3,7 @@
 namespace Drupal\integration_report;
 
 use Drupal\Component\Serialization\Json;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * Class IntegrationReport.
@@ -10,6 +11,8 @@ use Drupal\Component\Serialization\Json;
  * Extend this class in your custom implementation.
  */
 abstract class IntegrationReport {
+
+  use StringTranslationTrait;
 
   /**
    * Name of the report, set by info().
@@ -134,8 +137,8 @@ abstract class IntegrationReport {
    */
   public function info() {
     return [
-      'name' => t('Missing info hook'),
-      'description' => t('Please specify an info hook for status %class.', [
+      'name' => $this->t('Missing info hook'),
+      'description' => $this->t('Please specify an info hook for status %class.', [
         '%class' => IntegrationReportHelperTrait::getShortClassName($this),
       ]),
     ];
@@ -158,7 +161,7 @@ abstract class IntegrationReport {
   public function callback() {
     return [
       'success' => FALSE,
-      'messages' => t('Specify a callback for status %class or use the "no_callback" flag in status info.', [
+      'messages' => $this->t('Specify a callback for status %class or use the "no_callback" flag in status info.', [
         '%class' => IntegrationReportHelperTrait::getShortClassName($this),
       ]),
     ];
