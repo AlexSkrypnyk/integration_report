@@ -55,7 +55,7 @@ jobs:
   # build-php-7.4-legacy:
   #   <<: *container_config
   #   environment:
-  #     DRUPAL_VERSION: 8.7.6
+  #     DRUPAL_VERSION: 8.7.7
   #     # Drupal project commit before moving 8.8.0.
   #     # https://github.com/drupal-composer/drupal-project/commit/53f6910c35db73d0b367d5b6f22be4af94dd1af3
   #     DRUPAL_PROJECT_SHA: 53f6910c35db73d0b367d5b6f22be4af94dd1af3
@@ -66,7 +66,7 @@ jobs:
     docker:
       - image: circleci/php:7.3-cli-browsers
     environment:
-      DRUPAL_VERSION: 8.7.6
+      DRUPAL_VERSION: 8.7.7
       # Drupal project commit before moving 8.8.0.
       # https://github.com/drupal-composer/drupal-project/commit/53f6910c35db73d0b367d5b6f22be4af94dd1af3
       DRUPAL_PROJECT_SHA: 53f6910c35db73d0b367d5b6f22be4af94dd1af3
@@ -77,7 +77,7 @@ jobs:
     docker:
       - image: circleci/php:7.2-cli-browsers
     environment:
-      DRUPAL_VERSION: 8.7.6
+      DRUPAL_VERSION: 8.7.7
       # Drupal project commit before moving 8.8.0.
       # https://github.com/drupal-composer/drupal-project/commit/53f6910c35db73d0b367d5b6f22be4af94dd1af3
       DRUPAL_PROJECT_SHA: 53f6910c35db73d0b367d5b6f22be4af94dd1af3
