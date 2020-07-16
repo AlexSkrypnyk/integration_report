@@ -1,0 +1,15 @@
+integration_report.overview:
+  path: '/admin/reports/integrations'
+  defaults:
+    _controller: '\Drupal\integration_report\Controller\IntegrationReportController::overview'
+    _title: 'Integration report'
+  requirements:
+    _permission: 'access integration report'
+
+integration_report.js_callback:
+  path: '/admin/reports/integrations/{report_class}'
+  defaults:
+    _controller: '\Drupal\integration_report\Controller\IntegrationReportController::jsCallback'
+    _title: 'Integration report JS callback'
+  requirements:
+    _permission: 'access integration report'

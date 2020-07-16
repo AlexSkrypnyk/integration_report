@@ -1,0 +1,4 @@
+access integration report:
+  title: 'Access integration report'
+  description: 'Access integration report page'
+  restrict access: TRUE

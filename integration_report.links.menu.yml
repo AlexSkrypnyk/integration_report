@@ -1,0 +1,5 @@
+integration_report.overview:
+  title: 'Integration report'
+  description: 'Report on availability status of 3-rd party endpoints.'
+  route_name: integration_report.overview
+  parent: system.admin_reports

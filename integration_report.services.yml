@@ -1,0 +1,5 @@
+services:
+  integration_report.report_manager:
+    class: Drupal\integration_report\IntegrationReportManager
+    tags:
+      - { name: service_collector, tag: integration_report, call: addReport }

@@ -1,0 +1,21 @@
+{
+  "name": "integratedexperts/integration_report",
+  "description": "Drupal module to report on availability status of 3-rd party endpoints.",
+  "license": "GPL-2.0-or-later",
+  "keywords": [
+    "drupal",
+    "api",
+    "services"
+  ],
+  "homepage": "https://github.com/integratedexperts/integration_report",
+  "authors": [
+    {
+      "name": "Alex Skrypnyk",
+      "email": "alex@integratedexperts.com"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/integratedexperts/integration_report/issues",
+    "source": "https://github.com/integratedexperts/integration_report"
+  }
+}

@@ -1,0 +1,94 @@
+/**
+ * @file
+ * Integration Report styles.
+ */
+.integration-report-table tr td {
+  background: none;
+  min-width: 25px;
+}
+
+.integration-report-table tr.ok {
+  color: #325e1c;
+  background-color: #f3faef;
+}
+
+.integration-report-table tr.warning {
+  color: #734c00;
+  background-color: #fdf8ed;
+}
+
+.integration-report-table tr.error {
+  color: #a51b00;
+  background-color: #fcf4f2;
+}
+
+.integration-report-table tr td.status-report-icon {
+  width: 20px;
+}
+
+.integration-report-table tr td.status-report-response {
+  font-weight: bold;
+  line-height: 35px;
+}
+
+.integration-report-table tr.status-report-complete {
+  cursor: pointer;
+}
+
+.integration-report-table tr.status-report-complete.open {
+  background-repeat: no-repeat;
+  background-position: 20px 20px;
+}
+
+.integration-report-table tr.status-report-complete.open ul {
+  display: block;
+}
+
+.integration-report-table tr.status-report-complete.open td.status-report-icon {
+  background-image: url('../../../../core/misc/menu-expanded.png');
+}
+
+.integration-report-table tr.status-report-complete td.status-report-icon {
+  background: url('../../../../core/misc/menu-collapsed.png') no-repeat 20px 20px;
+}
+
+.integration-report-table tr.status-report-complete ul {
+  display: none;
+  list-style-type: square;
+  padding-left: 15px;
+}
+
+.integration-report-table tr.status-report-complete ul li {
+  list-style-type: square;
+  display: list-item;
+  padding-left: 5px;
+  border: none;
+}
+
+.integration-report-table tr.status-report-complete:hover td {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.integration-report-table .ajax-progress {
+  display: inline-block;
+}
+
+.integration-report-table .ajax-progress-throbber {
+  background: transparent url('../../../../core/misc/throbber-active.gif') no-repeat 0 -18px;
+  height: 15px;
+  margin: 10px 0 10px 10px;
+  width: 15px;
+  display: block;
+}
+
+.integration-report-debug-result {
+  display: none;
+}
+
+.integration-report-debug-result.open {
+  display: block;
+}
+
+.integration-report-debug-result iframe {
+  width: 100%;
+}

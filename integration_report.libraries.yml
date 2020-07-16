@@ -1,0 +1,9 @@
+integration_report:
+  css:
+    theme:
+      css/integration-report.css: {}
+  js:
+    js/integration-report.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal

@@ -1,0 +1,5 @@
+name: Integration Report
+description: Report on availability status of 3-rd party endpoints.
+type: module
+core: 8.x
+package: Other
