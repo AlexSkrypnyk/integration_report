@@ -1,0 +1,9 @@
+services:
+  integration_report_example1:
+    class: Drupal\integration_report_example\IntegrationReportExample1
+    tags:
+      - { name: integration_report }
+  integration_report_example2:
+    class: Drupal\integration_report_example\IntegrationReportExample2
+    tags:
+      - { name: integration_report }
