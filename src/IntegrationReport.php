@@ -45,7 +45,9 @@ abstract class IntegrationReport {
   /**
    * Whether the status callback needs to be performed over https.
    *
-   * @var bool
+   * If NULL, then the current protocol will be used.
+   *
+   * @var bool|null
    */
   public $secureCallback;
 
@@ -62,7 +64,7 @@ abstract class IntegrationReport {
         $this->js = $info['js'];
       }
       $this->useCallback = isset($info['use_callback']) ? $info['use_callback'] : TRUE;
-      $this->secureCallback = isset($info['secure_callback']) ? $info['secure_callback'] : FALSE;
+      $this->secureCallback = isset($info['secure_callback']) ? $info['secure_callback'] : NULL;
     }
   }
 
