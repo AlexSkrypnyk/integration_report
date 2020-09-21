@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class IntegrationReportExample2.
+ *
+ * Example for the IntegrationReport module.
  */
 class IntegrationReportExample2 extends IntegrationReport {
 

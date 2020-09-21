@@ -5,6 +5,8 @@ namespace Drupal\integration_report;
 /**
  * Trait IntegrationReportHelperTrait.
  *
+ * Utilities for the integration report.
+ *
  * @package Drupal\integration_report
  */
 trait IntegrationReportHelperTrait {

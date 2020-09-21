@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class IntegrationReportController.
  *
+ * Controller for integration report.
+ *
  * @package Drupal\dblog\Controller
  */
 class IntegrationReportController extends ControllerBase {
