@@ -108,7 +108,7 @@ class IntegrationReportController extends ControllerBase {
       if ($report->useCallback) {
         $url_attributes = [
           'absolute' => TRUE,
-          'https' => $report->secureCallback ? TRUE : FALSE,
+          'https' => $report->secureCallback,
         ];
         $iframe_url = Url::fromUserInput('/admin/reports/integrations/' . $class_name, $url_attributes);
         $table['#suffix'] .= new FormattableMarkup('<div class="integration-report-debug-result" data-debug-result="@class_name"><strong>Content debug for @report_name</strong><br/><iframe src="@iframe_url"></iframe></div>', [
