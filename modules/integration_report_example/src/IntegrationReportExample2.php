@@ -1,5 +1,7 @@
 <?php
 
+// phpcs:disable DrupalPractice.Objects.GlobalDrupal.GlobalDrupal
+
 namespace Drupal\integration_report_example;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
@@ -41,7 +43,7 @@ class IntegrationReportExample2 extends IntegrationReport {
     return [
       'name' => $this->t('Report example 2 name'),
       'description' => $this->t('Report example 2 description - open browser console and assert that test string is posted.'),
-      'js' => Url::fromUserInput('/' . drupal_get_path('module', 'integration_report_example') . '/js/integration-report-example.js')->setAbsolute(TRUE)->toString(),
+      'js' => Url::fromUserInput('/' . \Drupal::service('extension.list.module')->getPath('integration_report_example') . '/js/integration-report-example.js')->setAbsolute(TRUE)->toString(),
     ];
   }
 

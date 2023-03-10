@@ -55,7 +55,7 @@ class MyModuleExampleIntegrationReport extends IntegrationReport {
       'name' => $this->t('Status name'),
       'description' => $this->t('Status description'),
       // Optional parameters:
-      'js' => drupal_get_path('module', 'example_module') . '/status/example-module-status.js',
+      'js' => \Drupal::service('extension.list.module')->getPath('example_module') . '/status/example-module-status.js',
       'secure_callback' => FALSE,
       'use_callback' => TRUE,
       'access' => TRUE,
