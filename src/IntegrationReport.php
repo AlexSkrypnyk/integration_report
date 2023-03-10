@@ -63,8 +63,8 @@ abstract class IntegrationReport {
       if (isset($info['js'])) {
         $this->js = $info['js'];
       }
-      $this->useCallback = isset($info['use_callback']) ? $info['use_callback'] : TRUE;
-      $this->secureCallback = isset($info['secure_callback']) ? $info['secure_callback'] : NULL;
+      $this->useCallback = $info['use_callback'] ?: TRUE;
+      $this->secureCallback = $info['secure_callback'] ?: NULL;
     }
   }
 

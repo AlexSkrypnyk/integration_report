@@ -1,6 +1,8 @@
 /**
  * @file
  * Integration Report response handlers.
+ *
+ * phpcs:disable Generic.PHP.UpperCaseConstant.Found
  */
 
 (function ($) {
