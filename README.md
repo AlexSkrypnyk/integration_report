@@ -1,7 +1,9 @@
 # Integration Report Drupal module
 Drupal module to report on availability status of 3-rd party endpoints.
 
-[![CircleCI](https://circleci.com/gh/integratedexperts/integration_report.svg?style=shield)](https://circleci.com/gh/integratedexperts/integration_report)
+[![CircleCI](https://circleci.com/gh/AlexSkrypnyk/integration_report.svg?style=shield)](https://circleci.com/gh/AlexSkrypnyk/integration_report)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/AlexSkrypnyk/integration_report)
+![LICENSE](https://img.shields.io/github/license/drevops/generated_content)
 
 ![screenshot](https://user-images.githubusercontent.com/378794/39668688-daf598bc-5117-11e8-9d15-5459278d164e.png)
 
