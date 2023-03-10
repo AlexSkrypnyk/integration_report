@@ -1,7 +1,7 @@
 # Ignore files for distribution archives.
-tests           export-ignore
+tests             export-ignore
 
-# Uncomment the lines below in your project.
+.ahoy.yml       export-ignore
 .circleci       export-ignore
 .editorconfig   export-ignore
 .gitattributes  export-ignore

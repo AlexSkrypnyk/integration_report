@@ -1,66 +1,188 @@
 #!/usr/bin/env bash
 ##
-# Build.
+# Build Drupal site using SQLite database, install current module and serve
+# using in-built PHP server.
 #
-# shellcheck disable=SC2015,SC2094
+# Allows to use the latest Drupal core as well as specified versions (for
+# testing backward compatibility).
+#
+# - Retrieves the scaffold from drupal-composer/drupal-project or custom scaffold.
+# - Builds Drupal site codebase with current module and it's dependencies.
+# - Installs Drupal using SQLite database.
+# - Starts in-built PHP-server
+# - Enables module
+# - Serves site and generates one-time login link
+#
+# This script will re-build everything from scratch every time it runs.
+
+# shellcheck disable=SC2015,SC2094,SC2002
 
 set -e
 
-echo "==> Validate composer"
-composer validate --ansi --strict
+#-------------------------------------------------------------------------------
+# Variables (passed from environment; provided for reference only).
+#-------------------------------------------------------------------------------
 
-[ -d build ] && echo "==> Remove existing build directory" && chmod -Rf 777 build && rm -rf build
+# Directory where Drupal site will be built.
+BUILD_DIR="${BUILD_DIR:-build}"
 
-# Allow installing custom version of Drupal core, but only coupled with
-# drupal-project SHA (required to get correct dependencies).
-if [ -n "${DRUPAL_PROJECT_SHA}" ] && [ -n "${DRUPAL_VERSION}" ] ; then
-  echo "==> Initialise Drupal site from the scaffold commit $DRUPAL_PROJECT_SHA"
+# Webserver hostname.
+WEBSERVER_HOST="${WEBSERVER_HOST:-localhost}"
 
-  git clone -n https://github.com/drupal-composer/drupal-project.git build
-  git --git-dir=build/.git --work-tree=build checkout "${DRUPAL_PROJECT_SHA}"
-  rm -rf build/.git > /dev/null
+# Webserver port.
+WEBSERVER_PORT="${WEBSERVER_PORT:-8000}"
 
-  echo "==> Pin Drupal to a specific version"
-  sed_opts=(-i) && [ "$(uname)" == "Darwin" ] && sed_opts=(-i '')
-  sed "${sed_opts[@]}" 's|\(.*"drupal\/core"\): "\(.*\)",.*|\1: '"\"$DRUPAL_VERSION\",|" build/composer.json
-  cat build/composer.json
+# Drupal core version to use. If not provided - the latest stable version will be used.
+# Must be coupled with DRUPAL_PROJECT_SHA below.
+DRUPAL_VERSION="${DRUPAL_VERSION:-}"
 
-  echo "==> Install dependencies"
-  php -d memory_limit=-1 "$(command -v composer)" --working-dir=build install
-else
-  echo "==> Initialise Drupal site from the latest scaffold"
-  php -d memory_limit=-1 "$(command -v composer)" create-project drupal-composer/drupal-project:8.x-dev build --no-interaction
-fi
+# Commit SHA of the drupal-project to install custom core version. If not
+# provided - the latest version will be used.
+# Must be coupled with DRUPAL_VERSION above.
+DRUPAL_PROJECT_SHA="${DRUPAL_PROJECT_SHA:-}"
 
-echo "==> Install additional dev dependencies from module's composer.json"
-cat <<< "$(jq --indent 4 -M -s '.[0] * .[1]' composer.json build/composer.json)" > build/composer.json
-php -d memory_limit=-1 "$(command -v composer)" --working-dir=build update --lock
+# Repository for "drupal-composer/drupal-project" project.
+# May be overwritten to use forked repos that may have not been accepted
+# yet (i.e., when major Drupal version is about to be released).
+DRUPAL_PROJECT_REPO="${DRUPAL_PROJECT_REPO:-https://github.com/drupal-composer/drupal-project.git}"
 
-echo "==> Install other dev dependencies"
-cat <<< "$(jq --indent 4 '.extra["phpcodesniffer-search-depth"] = 10' build/composer.json)" > build/composer.json
-php -d memory_limit=-1 "$(command -v composer)" --working-dir=build require --dev dealerdirect/phpcodesniffer-composer-installer
+# Drupal profile to use when installing the site.
+DRUPAL_PROFILE="${DRUPAL_PROFILE:-standard}"
 
-echo "==> Start inbuilt PHP server in $(pwd)/build/web"
-killall -9 php > /dev/null 2>&1  || true
-nohup php -S localhost:8000 -t "$(pwd)/build/web" "$(pwd)/build/web/.ht.router.php" > /tmp/php.log 2>&1 &
-sleep 4 # Waiting for the server to be ready.
-netstat_opts='-tulpn'; [ "$(uname)" == "Darwin" ] && netstat_opts='-anv' || true;
-netstat "${netstat_opts[@]}" | grep -q 8000 || (echo "ERROR: Unable to start inbuilt PHP server" && cat /tmp/php.log && exit 1)
-curl -s -o /dev/null -w "%{http_code}" -L -I http://localhost:8000 | grep -q 200 || (echo "ERROR: Server is started, but site cannot be served" && exit 1)
+# Module name, taken from the .info file.
+MODULE="$(basename -s .info.yml -- ./*.info.yml)"
 
-MODULE=$(basename -s .info.yml -- ./*.info.yml)
+# Database file path.
 DB_FILE="${DB_FILE:-/tmp/site_${MODULE}.sqlite}"
 
-echo "==> Install Drupal into SQLite database ${DB_FILE}"
-build/vendor/bin/drush -r build/web si "${DRUPAL_PROFILE:-standard}" -y --db-url "sqlite://${DB_FILE}" --account-name=admin install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL
-build/vendor/bin/drush -r "$(pwd)/build/web" status
+#-------------------------------------------------------------------------------
 
-echo "==> Symlink module code"
-rm -rf build/web/modules/"${MODULE}"/* > /dev/null
-mkdir -p "build/web/modules/${MODULE}"
-ln -s "$(pwd)"/* build/web/modules/"${MODULE}" && rm build/web/modules/"${MODULE}"/build
+echo
+echo "==> Started build in \"${BUILD_DIR}\" directory."
+echo
 
-echo "==> Enable module ${MODULE}"
-build/vendor/bin/drush -r build/web pm:enable "${MODULE}" -y
-build/vendor/bin/drush -r build/web cr
-build/vendor/bin/drush -r build/web -l http://localhost:8000 uli --no-browser
+echo "-------------------------------"
+echo " Validating requirements       "
+echo "-------------------------------"
+
+echo "  > Validating tools."
+! command -v git > /dev/null && echo "ERROR: Git is required for this script to run." && exit 1
+! command -v php > /dev/null && echo "ERROR: PHP is required for this script to run." && exit 1
+! command -v composer > /dev/null && echo "ERROR: Composer (https://getcomposer.org/) is required for this script to run." && exit 1
+! command -v jq > /dev/null && echo "ERROR: jq (https://stedolan.github.io/jq/) is required for this script to run." && exit 1
+
+echo "  > Validating Composer configuration."
+composer validate --ansi --strict
+
+# Reset the environment.
+[ -d "${BUILD_DIR}" ] && echo "  > Removing existing ${BUILD_DIR} directory." && chmod -Rf 777 "${BUILD_DIR}" && rm -rf "${BUILD_DIR}"
+
+echo "-------------------------------"
+echo " Installing Composer packages  "
+echo "-------------------------------"
+
+# Allow installing custom version of Drupal core from drupal-composer/drupal-project,
+# but only coupled with drupal-project SHA (required to get correct dependencies).
+if [ -n "${DRUPAL_VERSION}" ] && [ -n "${DRUPAL_PROJECT_SHA}" ]; then
+  echo "  > Initialising Drupal site from the scaffold repo ${DRUPAL_PROJECT_REPO} commit ${DRUPAL_PROJECT_SHA}."
+
+  # Clone Drupal core at the specific commit SHA.
+  git clone -n "${DRUPAL_PROJECT_REPO}" "${BUILD_DIR}"
+  git --git-dir="${BUILD_DIR}/.git" --work-tree="${BUILD_DIR}" checkout "${DRUPAL_PROJECT_SHA}"
+  rm -rf "${BUILD_DIR}/.git" > /dev/null
+
+  echo "  > Pinning Drupal to a specific version ${DRUPAL_VERSION}."
+  sed_opts=(-i) && [ "$(uname)" == "Darwin" ] && sed_opts=(-i '')
+  sed "${sed_opts[@]}" 's|\(.*"drupal\/core"\): "\(.*\)",.*|\1: '"\"$DRUPAL_VERSION\",|" "${BUILD_DIR}/composer.json"
+  cat "${BUILD_DIR}/composer.json"
+else
+  echo "  > Initialising Drupal site from the latest scaffold."
+  # There are no releases in "drupal-composer/drupal-project", so have to use "@dev".
+  php -d memory_limit=-1 "$(command -v composer)" create-project drupal-composer/drupal-project:@dev "${BUILD_DIR}" --no-interaction --no-install
+fi
+
+echo "  > Updating scaffold."
+cat <<< "$(jq --indent 4 '.extra["enable-patching"] = true' "${BUILD_DIR}/composer.json")" > "${BUILD_DIR}/composer.json"
+cat <<< "$(jq --indent 4 '.extra["phpcodesniffer-search-depth"] = 10' "${BUILD_DIR}/composer.json")" > "${BUILD_DIR}/composer.json"
+
+echo "  > Merging configuration from module's composer.json."
+php -r "echo json_encode(array_replace_recursive(json_decode(file_get_contents('composer.json'), true),json_decode(file_get_contents('${BUILD_DIR}/composer.json'), true)),JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);" > "${BUILD_DIR}/composer2.json" && mv -f "${BUILD_DIR}/composer2.json" "${BUILD_DIR}/composer.json"
+
+echo "  > Creating GitHub authentication token if provided."
+[ -n "$GITHUB_TOKEN" ] && composer config --global github-oauth.github.com "$GITHUB_TOKEN" && echo "Token: " && composer config --global github-oauth.github.com
+
+echo "  > Installing dependencies."
+php -d memory_limit=-1 "$(command -v composer)" --working-dir="${BUILD_DIR}" install
+
+# Suggested dependencies allow to install them for testing without requiring
+# them in module's composer.json.
+echo "  > Installing suggested dependencies from module's composer.json."
+composer_suggests=$(cat composer.json | jq -r 'select(.suggest != null) | .suggest | keys[]')
+for composer_suggest in $composer_suggests; do
+  php -d memory_limit=-1 "$(command -v composer)" --working-dir="${BUILD_DIR}" require "${composer_suggest}"
+done
+
+echo "  > Installing other dev dependencies."
+php -d memory_limit=-1 "$(command -v composer)" --working-dir="${BUILD_DIR}" require --dev \
+  dealerdirect/phpcodesniffer-composer-installer \
+  phpspec/prophecy-phpunit:^2 \
+  mglaman/drupal-check \
+  rector/rector:0.15.13 \
+  palantirnet/drupal-rector
+cp "${BUILD_DIR}/vendor/palantirnet/drupal-rector/rector.php" "${BUILD_DIR}/."
+
+echo "-------------------------------"
+echo " Starting builtin PHP server   "
+echo "-------------------------------"
+
+# Stop previously started services.
+killall -9 php > /dev/null 2>&1 || true
+# Start the PHP webserver.
+nohup php -S "${WEBSERVER_HOST}:${WEBSERVER_PORT}" -t "$(pwd)/${BUILD_DIR}/web" "$(pwd)/${BUILD_DIR}/web/.ht.router.php" > /tmp/php.log 2>&1 &
+sleep 4 # Waiting for the server to be ready.
+netstat_opts='-tulpn'; [ "$(uname)" == "Darwin" ] && netstat_opts='-anv' || true;
+# Check that the server was started.
+netstat "${netstat_opts[@]}" | grep -q "${WEBSERVER_PORT}" || (echo "ERROR: Unable to start inbuilt PHP server" && cat /tmp/php.log && exit 1)
+# Check that the server can serve content.
+curl -s -o /dev/null -w "%{http_code}" -L -I "http://${WEBSERVER_HOST}:${WEBSERVER_PORT}" | grep -q 200 || (echo "ERROR: Server is started, but site cannot be served" && exit 1)
+echo "  > Started builtin PHP server at http://${WEBSERVER_HOST}:${WEBSERVER_PORT} in $(pwd)/${BUILD_DIR}/web."
+
+echo "-------------------------------"
+echo " Installing Drupal and modules "
+echo "-------------------------------"
+
+echo "  > Installing Drupal into SQLite database ${DB_FILE}."
+"${BUILD_DIR}/vendor/bin/drush" -r "${BUILD_DIR}/web" si "${DRUPAL_PROFILE}" -y --db-url "sqlite://${DB_FILE}" --account-name=admin install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL
+"${BUILD_DIR}/vendor/bin/drush" -r "$(pwd)/${BUILD_DIR}/web" status
+
+echo "  > Symlinking module code."
+rm -rf "${BUILD_DIR}/web/modules/${MODULE}"/* > /dev/null
+mkdir -p "${BUILD_DIR}/web/modules/${MODULE}"
+ln -s "$(pwd)"/* "${BUILD_DIR}/web/modules/${MODULE}" && rm "${BUILD_DIR}/web/modules/${MODULE}/${BUILD_DIR}"
+
+echo "  > Enabling module ${MODULE}."
+"${BUILD_DIR}/vendor/bin/drush" -r "${BUILD_DIR}/web" pm:enable "${MODULE}" -y
+"${BUILD_DIR}/vendor/bin/drush" -r "${BUILD_DIR}/web" cr
+
+echo "  > Enabling suggested modules, if any."
+drupal_suggests=$(cat composer.json | jq -r 'select(.suggest != null) | .suggest | keys[]' | sed "s/drupal\///" | cut -f1 -d":")
+for drupal_suggest in $drupal_suggests; do
+  "${BUILD_DIR}/vendor/bin/drush" -r "${BUILD_DIR}/web" pm:enable "${drupal_suggest}" -y
+done
+
+# Visit site to pre-warm caches.
+curl -s "http://${WEBSERVER_HOST}:${WEBSERVER_PORT}" > /dev/null
+
+echo "-------------------------------"
+echo " Build finished 🚀🚀🚀"
+echo "-------------------------------"
+
+echo
+echo "  > Site URL:            http://${WEBSERVER_HOST}:${WEBSERVER_PORT}"
+echo -n "  > One-time login link: "
+"${BUILD_DIR}/vendor/bin/drush" -r "${BUILD_DIR}/web" -l "http://${WEBSERVER_HOST}:${WEBSERVER_PORT}" uli --no-browser
+echo "  > Available commands:"
+echo "    ahoy build  # rebuild"
+echo "    ahoy lint   # check coding standards"
+echo "    ahoy test   # run tests"
+echo
