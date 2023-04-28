@@ -1,9 +1,11 @@
 integration_report:
+  header: true
   css:
     theme:
-      css/integration-report.css: {}
+      css/integration-report.css: {preprocess: false}
   js:
-    js/integration-report.js: {}
+    js/integration-report.js: {preprocess: false}
   dependencies:
-    - core/jquery
     - core/drupal
+    - core/jquery
+    - core/once
