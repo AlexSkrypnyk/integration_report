@@ -18,7 +18,7 @@ class IntegrationReportManager {
    *
    * @var \Drupal\integration_report\IntegrationReport[]
    */
-  protected $reports;
+  protected $reports = [];
 
   /**
    * Get all available reports.
@@ -57,7 +57,7 @@ class IntegrationReportManager {
   public function findReport($class) {
     $reports = $this->getReports();
     foreach ($reports as $report) {
-      if (strpos(IntegrationReportHelperTrait::getShortClassName($report), $class) !== FALSE) {
+      if (strpos(static::getShortClassName($report), $class) !== FALSE) {
         return $report;
       }
     }
@@ -73,11 +73,13 @@ class IntegrationReportManager {
    */
   protected function sortReports() {
     $sorted = [];
+
     krsort($this->reports);
 
     foreach ($this->reports as $items) {
-      $sorted = array_merge($sorted, $items);
+      $sorted = array_merge($sorted, is_array($items) ? $items : [$items]);
     }
+
     return $sorted;
   }
 

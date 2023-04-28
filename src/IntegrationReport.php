@@ -12,6 +12,7 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
  */
 abstract class IntegrationReport {
 
+  use IntegrationReportHelperTrait;
   use StringTranslationTrait;
 
   /**
@@ -36,7 +37,7 @@ abstract class IntegrationReport {
   public $js;
 
   /**
-   * Whether or not to use the callback in the report, set by info().
+   * Whether to use the callback in the report, set by info().
    *
    * @var bool
    */
@@ -63,15 +64,15 @@ abstract class IntegrationReport {
       if (isset($info['js'])) {
         $this->js = $info['js'];
       }
-      $this->useCallback = $info['use_callback'] ?: TRUE;
-      $this->secureCallback = $info['secure_callback'] ?: NULL;
+      $this->useCallback = $info['use_callback'] ?? TRUE;
+      $this->secureCallback = $info['secure_callback'] ?? NULL;
     }
   }
 
   /**
    * Retrieve a JavaScript parent post message script for a given status class.
    *
-   * JavaScript is printed inside of an iFrame that is loaded on the status
+   * JavaScript is printed inside an iFrame that is loaded on the status
    * page.
    * After the iFrame has loaded, the post message script is executed to the
    * parent window and the status is interpreted by the status table.
@@ -90,7 +91,7 @@ abstract class IntegrationReport {
     $results['time'] = round(microtime(TRUE) * 1000) - $start_time;
 
     // Get the class name for the current class.
-    $results['class'] = IntegrationReportHelperTrait::getShortClassName($this);
+    $results['class'] = static::getShortClassName($this);
 
     // Add the type so that postMessages are distinguished.
     $results['type'] = 'IntegrationReportHandler';
@@ -104,7 +105,7 @@ abstract class IntegrationReport {
         '#type' => 'ul',
         '#attributes' => [],
       ];
-      $results['message'] = IntegrationReportHelperTrait::render($element);
+      $results['message'] = static::render($element);
     }
     else {
       $results['message'] = '';
@@ -113,7 +114,7 @@ abstract class IntegrationReport {
     // Encode the results as a json response and return in a postMessage.
     $encoded_js_result = Json::encode($results);
 
-    return '<script type="text/javascript">parent.postMessage(' . $encoded_js_result . ',"*");</script>';
+    return '<!DOCTYPE html><head><script type="text/javascript">parent.postMessage(' . $encoded_js_result . ', "*");</script></head><body></body></html>';
   }
 
   /**
@@ -141,7 +142,7 @@ abstract class IntegrationReport {
     return [
       'name' => $this->t('Missing info hook'),
       'description' => $this->t('Please specify an info hook for status %class.', [
-        '%class' => IntegrationReportHelperTrait::getShortClassName($this),
+        '%class' => static::getShortClassName($this),
       ]),
     ];
   }
@@ -164,7 +165,7 @@ abstract class IntegrationReport {
     return [
       'success' => FALSE,
       'messages' => $this->t('Specify a callback for status %class or use the "no_callback" flag in status info.', [
-        '%class' => IntegrationReportHelperTrait::getShortClassName($this),
+        '%class' => static::getShortClassName($this),
       ]),
     ];
   }
