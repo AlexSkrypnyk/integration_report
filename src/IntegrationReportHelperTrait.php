@@ -14,7 +14,7 @@ trait IntegrationReportHelperTrait {
   /**
    * Get short class name from the namespaced class.
    *
-   * @param string $class
+   * @param string|object $class
    *   Class name prefixed by a namespace.
    *
    * @return string
@@ -25,7 +25,7 @@ trait IntegrationReportHelperTrait {
   }
 
   /**
-   * Render ekement.
+   * Render element.
    *
    * @param mixed $element
    *   Element to render.

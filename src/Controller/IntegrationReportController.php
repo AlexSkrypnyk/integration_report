@@ -83,7 +83,7 @@ class IntegrationReportController extends ControllerBase {
     $reports = $this->reportManager->getReports();
 
     foreach ($reports as $report) {
-      $class_name = IntegrationReportHelperTrait::getShortClassName($report);
+      $class_name = static::getShortClassName($report);
 
       // Skip processing reports which aren't available for executing.
       if (!$report->access()) {
@@ -103,7 +103,7 @@ class IntegrationReportController extends ControllerBase {
             'src' => $report->js,
           ],
         ];
-        $table['#suffix'] .= IntegrationReportHelperTrait::render($inline_js);
+        $table['#suffix'] .= static::render($inline_js);
       }
 
       // Attach any JavaScript firing callbacks in iFrames underneath the table.
@@ -154,7 +154,7 @@ class IntegrationReportController extends ControllerBase {
         // Add the class name for the handler in the data-status-result
         // attribute for the row for referencing by JavaScript.
         'data-status-result' => $class_name,
-        // By default all status rows start their life in amber mode.
+        // By default, all status rows start their life in amber mode.
         'class' => [
           'warning',
         ],

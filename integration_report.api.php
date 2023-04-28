@@ -44,7 +44,7 @@ class MyModuleExampleIntegrationReport extends IntegrationReport {
    *   - 'secure_callback' (bool, optional - default: FALSE)
    *       Whether the status callback needs to be performed over https.
    *   - 'use_callback' (bool, optional - default: TRUE)
-   *       Whether or not to use the standard iFrame callback method.
+   *       Whether to use the standard iFrame callback method.
    *   - 'access' (bool, optional - default: TRUE)
    *       Whether the status check is available based on additional custom
    *       conditions such as environment or user permission.
@@ -70,9 +70,9 @@ class MyModuleExampleIntegrationReport extends IntegrationReport {
    *
    * @return array
    *   - 'success' (bool, required)
-   *       Whether or not the status check was a success or failure.
+   *      Whether the status check was a success or failure.
    *   - 'messages' (array, required)
-   *       A list of string messages to be added to the response information
+   *      A list of string messages to be added to the response information
    *       for the test.
    */
   public function callback() {
@@ -109,7 +109,7 @@ class MyModuleExampleIntegrationReport extends IntegrationReport {
    *   Markup to be placed in the footer of the table.
    */
   public function statusPage() {
-    return '<div class="extra-status-markup">FOO</div>';
+    return '<div class="extra-status-markup">Optional footer markup</div>';
   }
 
 }
