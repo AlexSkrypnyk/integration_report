@@ -18,7 +18,7 @@
      * Update the status table with a status response.
      *
      * @param passed boolean
-     *   Whether or not the status is a pass or fail.
+     *   Whether the status is a pass or fail.
      * @param className string
      *   The name of the PHP class the status response belongs to.
      * @param message string
@@ -56,11 +56,10 @@
   /**
    * Respond to postMessages on the page.
    *
-   * Only fire statusReceived if the message is an object and has the type
-   * 'IntegrationReport'.
+   * Only fire statusReceived if the message is of the 'IntegrationReport' type.
    */
   window.addEventListener('message', function (e) {
-    if (e.data.type !== null && e.data.type === 'IntegrationReportHandler') {
+    if (e.data.type === 'IntegrationReportHandler') {
       Drupal.IntegrationReport.statusReceived(e.data.success, e.data.class, e.data.message, e.data.time);
     }
   }, false);
@@ -70,7 +69,7 @@
    */
   Drupal.behaviors.integrationReport = {
     attach: function (context, settings) {
-      $('[data-status-result]', context).click(function () {
+      $(once('integration-report-open', '[data-status-result]', context)).click(function () {
         $(this).toggleClass('open');
       });
     }
