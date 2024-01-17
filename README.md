@@ -1,6 +1,6 @@
 <p align="center">
   <a href="" rel="noopener">
-  <img width=200px height=200px src="https://placehold.jp/000000/ffffff/200x200.png?text=Integration+Report+Drupal+module&css=%7B%22border-radius%22%3A%22%20100px%22%7D" alt="Integration Report Drupal module"></a>
+  <img width=200px height=200px src="https://placehold.jp/000000/ffffff/200x200.png?text=Integration+Report&css=%7B%22border-radius%22%3A%22%20100px%22%7D" alt="Integration Report Drupal module"></a>
 </p>
 
 <h1 align="center">Integration Report Drupal module</h1>
