@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\integration_report;
 
 /**
@@ -9,52 +11,37 @@ namespace Drupal\integration_report;
  *
  * @package Drupal\integration_report
  */
-class IntegrationReportManager {
+class IntegrationReportManager implements IntegrationReportManagerInterface {
 
   use IntegrationReportHelperTrait;
 
   /**
    * Array of discovered instantiated report objects.
    *
-   * @var \Drupal\integration_report\IntegrationReport[]
+   * @var array<int, \Drupal\integration_report\IntegrationReportInterface[]>
    */
-  protected $reports = [];
+  protected array $reports = [];
 
   /**
-   * Get all available reports.
-   *
-   * @return array
-   *   Array of available reports.
+   * {@inheritDoc}
    */
-  public function getReports() {
+  public function getReports(): array {
     return $this->sortReports();
   }
 
   /**
-   * Add report to the list of reports.
-   *
-   * @param \Drupal\integration_report\IntegrationReport $report
-   *   The report to add.
-   * @param int $priority
-   *   Priority to add. Read from the service tags. Used to sort reports.
-   *
-   * @return $this
+   * {@inheritDoc}
    */
-  public function addReport(IntegrationReport $report, $priority = 0) {
+  public function addReport(IntegrationReportInterface $report, int $priority = 0): IntegrationReportManager {
     $this->reports[$priority][] = $report;
+
     return $this;
   }
 
   /**
-   * Find report by the short class name.
-   *
-   * @param string $class
-   *   Short class name.
-   *
-   * @return \Drupal\integration_report\IntegrationReport
-   *   Found report object.
+   * {@inheritDoc}
    */
-  public function findReport($class) {
+  public function findReport(string $class): ?IntegrationReportInterface {
     $reports = $this->getReports();
     foreach ($reports as $report) {
       if (strpos(static::getShortClassName($report), $class) !== FALSE) {
@@ -68,16 +55,16 @@ class IntegrationReportManager {
   /**
    * Sort reports.
    *
-   * @return array
+   * @return \Drupal\integration_report\IntegrationReportInterface[]
    *   Sorted reports.
    */
-  protected function sortReports() {
+  protected function sortReports(): array {
     $sorted = [];
 
     krsort($this->reports);
 
     foreach ($this->reports as $items) {
-      $sorted = array_merge($sorted, is_array($items) ? $items : [$items]);
+      $sorted = array_merge($sorted, $items);
     }
 
     return $sorted;

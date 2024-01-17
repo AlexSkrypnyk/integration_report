@@ -1,9 +1,18 @@
 services:
   integration_report_example1:
     class: Drupal\integration_report_example\IntegrationReportExample1
+    arguments:
+      - '@string_translation'
+      - '@renderer'
+      - '@http_client'
     tags:
       - { name: integration_report }
   integration_report_example2:
     class: Drupal\integration_report_example\IntegrationReportExample2
+    arguments:
+      - '@string_translation'
+      - '@renderer'
+      - '@http_client'
+      - '@extension.list.module'
     tags:
       - { name: integration_report }
