@@ -5,8 +5,9 @@
  * Api documentation for Integration Report module.
  */
 
-use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\integration_report\IntegrationReport;
+declare(strict_types = 1);
+
+use Drupal\integration_report\IntegrationReportBase;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -22,11 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @endcode
  */
 // @codingStandardsIgnoreStart
-class MyModuleExampleIntegrationReport extends IntegrationReport {
-
-  // @codingStandardsIgnoreEnd
-
-  use StringTranslationTrait;
+class MyModuleExampleIntegrationReportBase extends IntegrationReportBase {
 
   /**
    * Define the properties of the status.
@@ -49,7 +46,7 @@ class MyModuleExampleIntegrationReport extends IntegrationReport {
    *       Whether the status check is available based on additional custom
    *       conditions such as environment or user permission.
    */
-  public function info() {
+  public function info(): array {
     return [
       // Required parameters:
       'name' => $this->t('Status name'),
@@ -74,14 +71,16 @@ class MyModuleExampleIntegrationReport extends IntegrationReport {
    *   - 'messages' (array, required)
    *      A list of string messages to be added to the response information
    *       for the test.
+   *
+   * @SuppressWarnings(PHPMD.ElseExpression)
    */
-  public function callback() {
+  public function callback(): array {
     // Perform a request on an example url.
     $url = 'http://example.com';
     $response = \Drupal::httpClient()->get($url, ['headers' => ['Accept' => 'text/plain']]);
-
+    $messages = [];
     // Check for a 200 response and the word 'domain' in the response.
-    if ($response->getStatusCode() == Response::HTTP_OK && strpos($response->getBody(), 'domain') !== FALSE) {
+    if ($response->getStatusCode() == Response::HTTP_OK && strpos($response->getBody()->getContents(), 'domain') !== FALSE) {
       $success = TRUE;
       $messages[] = $this->t('@url was retrieved successfully.', [
         '@url' => $url,
@@ -108,7 +107,7 @@ class MyModuleExampleIntegrationReport extends IntegrationReport {
    * @return string
    *   Markup to be placed in the footer of the table.
    */
-  public function statusPage() {
+  public function statusPage(): string {
     return '<div class="extra-status-markup">Optional footer markup</div>';
   }
 

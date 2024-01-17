@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\integration_report\Controller;
 
 use Drupal\Component\Render\FormattableMarkup;
@@ -19,6 +21,8 @@ use Symfony\Component\HttpFoundation\Response;
  * Controller for integration report.
  *
  * @package Drupal\dblog\Controller
+ *
+ * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
  */
 class IntegrationReportController extends ControllerBase {
 
@@ -30,12 +34,13 @@ class IntegrationReportController extends ControllerBase {
    *
    * @var \Drupal\integration_report\IntegrationReportManager
    */
-  protected $reportManager;
+  protected IntegrationReportManager $reportManager;
 
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): IntegrationReportController {
+    // @phpstan-ignore-next-line
     return new static(
       $container->get('integration_report.report_manager')
     );
@@ -57,11 +62,13 @@ class IntegrationReportController extends ControllerBase {
    * Messages are truncated at 56 chars.
    * Full-length messages can be viewed on the message details page.
    *
-   * @return array
+   * @return array<mixed>
    *   A render array as expected by
    *   \Drupal\Core\Render\RendererInterface::render().
+   *
+   * @throws \ReflectionException
    */
-  public function overview() {
+  public function overview(): array {
     $table = [
       '#theme' => 'table',
       '#header' => ['', 'Status type', 'Result'],
@@ -93,41 +100,42 @@ class IntegrationReportController extends ControllerBase {
       // Attach the JavaScript file defined by the report class as an inline
       // javascript at the end of the table between Drupal settings and
       // library scripts and the footer of the page.
-      if ($report->js) {
+      if ($report->getJs()) {
         $inline_js = [
           '#type' => 'html_tag',
           '#tag' => 'script',
           '#value' => '',
           '#attributes' => [
             'type' => 'text/javascript',
-            'src' => $report->js,
+            'src' => $report->getJs(),
           ],
         ];
         $table['#suffix'] .= static::render($inline_js);
       }
 
       // Attach any JavaScript firing callbacks in iFrames underneath the table.
-      if ($report->useCallback) {
+      if ($report->isUseCallback()) {
         $url_attributes = [
           'absolute' => TRUE,
-          'https' => $report->secureCallback,
+          'https' => $report->isSecureCallback(),
         ];
         $iframe_url = Url::fromUserInput('/admin/reports/integrations/' . $class_name, $url_attributes);
         $table['#suffix'] .= new FormattableMarkup('<div class="integration-report-debug-result" data-debug-result="@class_name"><strong>Content debug for @report_name</strong><br/><iframe src="@iframe_url"></iframe></div>', [
           '@class_name' => $class_name,
-          '@report_name' => $report->name,
+          '@report_name' => $report->getName(),
           '@iframe_url' => $iframe_url->toString(),
         ]);
       }
 
       // Any hooks or additional page markup required by the report for the
       // status page get invoked here and added underneath the table.
-      if ($output = $report->statusPage()) {
+      $output = $report->statusPage();
+      if ($output) {
         $table['#suffix'] .= $output;
       }
 
       // Convert suffix to the proper markup.
-      $table['#suffix'] = new FormattableMarkup($table['#suffix'], []);
+      $table['#suffix'] = new FormattableMarkup((string) $table['#suffix'], []);
 
       // Add the table row for the report.
       $table['#rows'][] = [
@@ -140,8 +148,8 @@ class IntegrationReportController extends ControllerBase {
           // Column 2: Report name and description.
           [
             'data' => new FormattableMarkup('<strong>@name</strong><br />@description', [
-              '@name' => $report->name,
-              '@description' => $report->description,
+              '@name' => $report->getName(),
+              '@description' => $report->getDescription(),
             ]),
             'class' => ['status-report-message'],
           ],
@@ -173,22 +181,28 @@ class IntegrationReportController extends ControllerBase {
    *
    * @return \Symfony\Component\HttpFoundation\Response
    *   The response object.
+   *
+   * @SuppressWarnings(PHPMD.UnusedFormalParameter)
    */
-  public function jsCallback($report_class, Request $request) {
+  public function jsCallback($report_class, Request $request): Response {
     // Sanitise class name.
     $class = Html::escape($report_class);
 
     $report = $this->reportManager->findReport($class);
+    $headers = [];
+    $headers['Cache-Control'] = 'no-cache';
+    $headers['Pragma'] = 'no-cache';
+    $headers['Expires'] = '-1';
     if ($report) {
-      $headers['Cache-Control'] = 'no-cache';
-      $headers['Pragma'] = 'no-cache';
-      $headers['Expires'] = '-1';
       $result = $report->menuCallback();
-      $response = new Response($result, 200, $headers);
-      return $response;
+
+      return new Response($result, 200, $headers);
     }
 
-    $this->getLogger('integration_report')->warning($this->t('Unable to instantiate status class @class in JS callback.', ['@class' => $report_class]));
+    $warning = sprintf('Unable to instantiate status class %s in JS callback.', $report_class);
+    $this->getLogger('integration_report')->warning($warning);
+
+    return new Response($warning, 400, $headers);
   }
 
 }
