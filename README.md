@@ -14,6 +14,8 @@
 ![LICENSE](https://img.shields.io/github/license/AlexSkrypnyk/integration_report)
 ![Renovate](https://img.shields.io/badge/renovate-enabled-green?logo=renovatebot)
 
+![Drupal 9](https://img.shields.io/badge/Drupal-9-blue.svg) ![Drupal 10](https://img.shields.io/badge/Drupal-10-blue.svg)
+
 </div>
 
 ![screenshot](https://user-images.githubusercontent.com/378794/39668688-daf598bc-5117-11e8-9d15-5459278d164e.png)
