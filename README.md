@@ -50,3 +50,50 @@ does not have such information page.
 
 Refer to [integration_report.api.php](integration_report.api.php) and
 `modules/integration_report_example` for an implementation example.
+
+## Local development
+
+Provided that you have PHP installed locally, you can develop an extension using
+the provided scripts.
+
+### Build
+
+Run `.devtools/build-codebase.sh` (or `ahoy build-codebase`
+if [Ahoy](https://github.com/ahoy-cli/ahoy) is installed) to start inbuilt PHP
+server locally and run the same commands as in CI, plus installing a site and
+your extension automatically.
+
+### Code linting
+
+Run tools individually (or `ahoy lint` to run all tools
+if [Ahoy](https://github.com/ahoy-cli/ahoy) is installed) to lint your code
+according to
+the [Drupal coding standards](https://www.drupal.org/docs/develop/standards).
+
+```
+cd build
+
+vendor/bin/phpcs
+vendor/bin/phpstan
+vendor/bin/rector --clear-cache --dry-run
+vendor/bin/phpmd . text phpmd.xml
+vendor/bin/twigcs
+```
+
+- PHPCS config: [`phpcs.xml`](phpcs.xml)
+- PHPStan config: [`phpstan.neon`](phpstan.neon)
+- PHPMD config: [`phpmd.xml`](phpmd.xml)
+- Rector config: [`rector.php`](rector.php)
+- TwigCS config: [`.twig_cs.php`](.twig_cs.php)
+
+### Tests
+
+Run `.devtools/test.sh` (or `ahoy test`
+if [Ahoy](https://github.com/ahoy-cli/ahoy) is installed) to run all test for
+your extension.
+
+### Browsing SQLite database
+
+To browse the contents of created SQLite database
+(located at `/tmp/site_[EXTENSION_NAME].sqlite`),
+use [DB Browser for SQLite](https://sqlitebrowser.org/).
