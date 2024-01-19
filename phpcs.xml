@@ -3,6 +3,7 @@
   <description>Custom PHPCS Standard, based on Drupal standards.</description>
 
   <file>web/modules/custom</file>
+  <file>web/themes/custom</file>
   <file>web/sites/default/settings.php</file>
 
   <rule ref="Drupal"/>

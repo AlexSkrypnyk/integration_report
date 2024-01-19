@@ -20,5 +20,8 @@
     "support": {
         "issues": "https://drupal.org/project/issues/integration_report",
         "source": "https://git.drupalcode.org/project/integration_report"
+    },
+    "require": {
+        "php": ">=8.1"
     }
 }
