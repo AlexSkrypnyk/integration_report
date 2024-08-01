@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\integration_report;
 
@@ -14,6 +14,8 @@ use Drupal\Core\StringTranslation\TranslationInterface;
  * Class IntegrationReport.
  *
  * Extend this class in your custom implementation.
+ *
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 abstract class IntegrationReportBase implements IntegrationReportInterface {
 

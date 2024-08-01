@@ -14,7 +14,9 @@
 ![LICENSE](https://img.shields.io/github/license/AlexSkrypnyk/integration_report)
 ![Renovate](https://img.shields.io/badge/renovate-enabled-green?logo=renovatebot)
 
-![Drupal 9](https://img.shields.io/badge/Drupal-9-blue.svg) ![Drupal 10](https://img.shields.io/badge/Drupal-10-blue.svg)
+![Drupal 9](https://img.shields.io/badge/Drupal-9-blue.svg)
+![Drupal 10](https://img.shields.io/badge/Drupal-10-009CDE.svg)
+![Drupal 11](https://img.shields.io/badge/Drupal-11-006AA9.svg)
 
 </div>
 
@@ -58,7 +60,7 @@ the provided scripts.
 
 ### Build
 
-Run `.devtools/build-codebase.sh` (or `ahoy build-codebase`
+Run `.devtools/assemble.sh` (or `ahoy assemble`
 if [Ahoy](https://github.com/ahoy-cli/ahoy) is installed) to start inbuilt PHP
 server locally and run the same commands as in CI, plus installing a site and
 your extension automatically.
@@ -77,18 +79,18 @@ vendor/bin/phpcs
 vendor/bin/phpstan
 vendor/bin/rector --clear-cache --dry-run
 vendor/bin/phpmd . text phpmd.xml
-vendor/bin/twigcs
+vendor/bin/twig-cs-fixer
 ```
 
 - PHPCS config: [`phpcs.xml`](phpcs.xml)
 - PHPStan config: [`phpstan.neon`](phpstan.neon)
 - PHPMD config: [`phpmd.xml`](phpmd.xml)
 - Rector config: [`rector.php`](rector.php)
-- TwigCS config: [`.twig_cs.php`](.twig_cs.php)
+- Twig CS Fixer config: [`.twig-cs-fixer.php`](.twig-cs-fixer.php)
 
 ### Tests
 
-Run `.devtools/test.sh` (or `ahoy test`
+Run tests individually with `cd build && ./vendor/bin/phpunit` (or `ahoy test`
 if [Ahoy](https://github.com/ahoy-cli/ahoy) is installed) to run all test for
 your extension.
 

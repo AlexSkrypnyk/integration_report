@@ -5,7 +5,7 @@
  * Api documentation for Integration Report module.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 use Drupal\integration_report\IntegrationReportBase;
 use Symfony\Component\HttpFoundation\Response;

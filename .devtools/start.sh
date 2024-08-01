@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ##
-# Start built-in PHP-server.
+# Start development environment.
 #
 # shellcheck disable=SC2015,SC2094,SC2002
 
@@ -22,31 +22,44 @@ WEBSERVER_WAIT_TIMEOUT="${WEBSERVER_WAIT_TIMEOUT:-5}"
 
 #-------------------------------------------------------------------------------
 
-echo "-------------------------------"
-echo "   Start built-in PHP server   "
-echo "-------------------------------"
+# @formatter:off
+note() { printf "       %s\n" "${1}"; }
+info() { [ "${TERM:-}" != "dumb" ] && tput colors >/dev/null 2>&1 && printf "\033[34m[INFO] %s\033[0m\n" "${1}" || printf "[INFO] %s\n" "${1}"; }
+pass() { [ "${TERM:-}" != "dumb" ] && tput colors >/dev/null 2>&1 && printf "\033[32m[ OK ] %s\033[0m\n" "${1}" || printf "[ OK ] %s\n" "${1}"; }
+fail() { [ "${TERM:-}" != "dumb" ] && tput colors >/dev/null 2>&1 && printf "\033[31m[FAIL] %s\033[0m\n" "${1}" || printf "[FAIL] %s\n" "${1}"; }
+# @formatter:on
 
-echo "> Stop previously started services, if any."
+#-------------------------------------------------------------------------------
+
+echo "==============================="
+echo "      💻 START ENVIRONMENT     "
+echo "==============================="
+echo
+
+info "Stopping previously started services, if any."
 killall -9 php >/dev/null 2>&1 || true
 
-echo "> Start the PHP webserver."
+info "Starting the PHP webserver."
 nohup php -S "${WEBSERVER_HOST}:${WEBSERVER_PORT}" -t "$(pwd)/build/web" "$(pwd)/build/web/.ht.router.php" >/tmp/php.log 2>&1 &
 
-echo "> Wait ${WEBSERVER_WAIT_TIMEOUT} seconds for the server to be ready."
+note "Waiting ${WEBSERVER_WAIT_TIMEOUT} seconds for the server to be ready."
 sleep "${WEBSERVER_WAIT_TIMEOUT}"
 
-echo "> Check that the server was started."
+note "Checking that the server was started."
 netstat_opts='-tulpn'
 [ "$(uname)" == "Darwin" ] && netstat_opts='-anv' || true
 netstat "${netstat_opts[@]}" | grep -q "${WEBSERVER_PORT}" || (echo "ERROR: Unable to start inbuilt PHP server" && cat /tmp/php.log && exit 1)
 
-echo "> Check that the server can serve content."
+pass "Server started successfully."
+
+info "Checking that the server can serve content."
 curl -s -o /dev/null -w "%{http_code}" -L -I "http://${WEBSERVER_HOST}:${WEBSERVER_PORT}" | grep -q 200 || (echo "ERROR: Server is started, but site cannot be served" && exit 1)
+pass "Server can serve content."
 
 echo
-echo "-----------------------------------"
-echo "  Started built-in PHP server 🚀🚀 "
-echo "-----------------------------------"
+echo "==============================="
+echo "    💻 ENVIRONMENT READY  ✅  "
+echo "==============================="
 echo
 echo "Directory : $(pwd)/build/web"
 echo "URL       : http://${WEBSERVER_HOST}:${WEBSERVER_PORT}"

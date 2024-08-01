@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\integration_report\Controller;
 
@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @package Drupal\dblog\Controller
  *
  * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class IntegrationReportController extends ControllerBase {
 
