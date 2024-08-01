@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @package Drupal\dblog\Controller
  *
  * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class IntegrationReportController extends ControllerBase {
 
