@@ -21,8 +21,6 @@ help:
 	@echo "test-functional - Run functional tests."
 	@echo "test-kernel     - Run kernel tests."
 	@echo "test-unit       - Run unit tests."
-	@echo ""
-	@echo "Start by running \"make build\""
 
 build: stop assemble start provision
 
@@ -68,22 +66,22 @@ lint-fix:
 
 test:
 	pushd "build" >/dev/null || exit 1 && \
-	BROWSERTEST_OUTPUT_DIRECTORY=/tmp vendor/bin/phpunit && \
+	BROWSERTEST_OUTPUT_DIRECTORY=/tmp php -d pcov.directory=.. vendor/bin/phpunit && \
 	popd >/dev/null || exit 1
 
 test-unit:
 	pushd "build" >/dev/null || exit 1 && \
-	vendor/bin/phpunit --testsuite unit && \
+	php -d pcov.directory=.. vendor/bin/phpunit --testsuite unit && \
 	popd >/dev/null || exit 1
 
 test-kernel:
 	pushd "build" >/dev/null || exit 1 && \
-	vendor/bin/phpunit --testsuite kernel && \
+	php -d pcov.directory=.. vendor/bin/phpunit --testsuite kernel && \
 	popd >/dev/null || exit 1
 
 test-functional:
 	pushd "build" >/dev/null || exit 1 && \
-	BROWSERTEST_OUTPUT_DIRECTORY=/tmp vendor/bin/phpunit --testsuite functional && \
+	BROWSERTEST_OUTPUT_DIRECTORY=/tmp php -d pcov.directory=.. vendor/bin/phpunit --testsuite functional && \
 	popd >/dev/null || exit 1
 
 reset:
