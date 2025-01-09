@@ -94,7 +94,7 @@ interface IntegrationReportInterface {
   /**
    * Set SecureCallback.
    */
-  public function setSecureCallback(bool $secureCallback = NULL): void;
+  public function setSecureCallback(?bool $secureCallback = NULL): void;
 
   /**
    * Get SecureCallback.
