@@ -1,8 +1,8 @@
 {
     "name": "drupal/integration_report",
     "description": "Drupal module to report on availability status of 3-rd party endpoints.",
-    "license": "GPL-2.0-or-later",
     "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
     "keywords": [
         "drupal",
         "api",
@@ -22,6 +22,6 @@
         "source": "https://git.drupalcode.org/project/integration_report"
     },
     "require": {
-        "php": ">=8.1"
+        "php": ">=8.2"
     }
 }

@@ -131,7 +131,7 @@ abstract class IntegrationReportBase implements IntegrationReportInterface {
   /**
    * {@inheritDoc}
    */
-  public function setSecureCallback(bool $secureCallback = NULL): void {
+  public function setSecureCallback(?bool $secureCallback = NULL): void {
     $this->secureCallback = $secureCallback;
   }
 
