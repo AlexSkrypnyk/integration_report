@@ -19,7 +19,7 @@ trait IntegrationReportHelperTrait {
   /**
    * Renderer service.
    */
-  protected ?RendererInterface $renderer = NULL;
+  protected RendererInterface $renderer;
 
   /**
    * Get short class name from the namespaced class.
@@ -42,16 +42,12 @@ trait IntegrationReportHelperTrait {
    * @param mixed $element
    *   Element to render.
    *
-   * @return \Drupal\Component\Render\MarkupInterface
-   *   Rendered element as a string.
+   * @return \Drupal\Component\Render\MarkupInterface|string
+   *   Rendered element.
    *
    * @throws \Exception
    */
-  public function render(mixed $element): MarkupInterface {
-    if (!$this->renderer) {
-      return \Drupal::service('renderer')->render($element);
-    }
-
+  public function render(mixed $element): MarkupInterface|string {
     return $this->renderer->render($element);
   }
 
