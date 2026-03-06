@@ -8,18 +8,18 @@
 }
 
 .integration-report-table tr.ok {
-  color: #325e1c;
   background-color: #f3faef;
+  color: #325e1c;
 }
 
 .integration-report-table tr.warning {
-  color: #734c00;
   background-color: #fdf8ed;
+  color: #734c00;
 }
 
 .integration-report-table tr.error {
-  color: #a51b00;
   background-color: #fcf4f2;
+  color: #a51b00;
 }
 
 .integration-report-table tr td.status-report-icon {
@@ -36,8 +36,8 @@
 }
 
 .integration-report-table tr.status-report-complete.open {
-  background-repeat: no-repeat;
   background-position: 20px 20px;
+  background-repeat: no-repeat;
 }
 
 .integration-report-table tr.status-report-complete.open ul {
@@ -59,14 +59,14 @@
 }
 
 .integration-report-table tr.status-report-complete ul li {
-  list-style-type: square;
-  display: list-item;
-  padding-left: 5px;
   border: none;
+  display: list-item;
+  list-style-type: square;
+  padding-left: 5px;
 }
 
 .integration-report-table tr.status-report-complete:hover td {
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgb(255 255 255 / 40%);
 }
 
 .integration-report-table .ajax-progress {
@@ -75,10 +75,10 @@
 
 .integration-report-table .ajax-progress-throbber {
   background: transparent url('../../../../core/misc/throbber-active.gif') no-repeat 0 -18px;
+  display: block;
   height: 15px;
   margin: 10px 0 10px 10px;
   width: 15px;
-  display: block;
 }
 
 .integration-report-debug-result {

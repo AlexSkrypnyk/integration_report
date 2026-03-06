@@ -8,14 +8,14 @@ use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\integration_report\IntegrationReportBase;
 use Drupal\Tests\UnitTestCase;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Class IntegrationReportTest.
  *
  * Example test case class.
- *
- * @group integration_report
  */
+#[Group('integration_report')]
 class IntegrationReportTest extends UnitTestCase {
 
   /**

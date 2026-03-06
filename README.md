@@ -62,11 +62,11 @@ Refer to [integration_report.api.php](integration_report.api.php) and
 
 1. Install PHP with SQLite support and Composer
 3. Clone this repository
-4. Run `make build` or `ahoy build`
+4. Run `ahoy build`
 
 ## Building website
 
-`make build` or `ahoy build` assembles the codebase, starts the PHP server
+`ahoy build` assembles the codebase, starts the PHP server
 and provisions the Drupal website with this extension enabled. These operations
 are executed using scripts within [`.devtools`](.devtools) directory. CI uses
 the same scripts to build and test this extension.
@@ -76,10 +76,6 @@ files are symlinked into the Drupal site structure.
 
 The `build` command is a wrapper for more granular commands:
 ```bash
-make assemble     # Assemble the codebase
-make start        # Start the PHP server
-make provision    # Provision the Drupal website
-
 ahoy assemble     # Assemble the codebase
 ahoy start        # Start the PHP server
 ahoy provision    # Provision the Drupal website
@@ -94,13 +90,13 @@ The Drupal version used for the codebase assembly is determined by the
 `DRUPAL_VERSION` variable and defaults to the latest stable version.
 
 You can specify a different version by setting the `DRUPAL_VERSION` environment
-variable before running the `make build` or `ahoy build` command:
+variable before running the `ahoy build` command:
 
 ```bash
-DRUPAL_VERSION=11 make build        # Drupal 11
-DRUPAL_VERSION=11@alpha make build  # Drupal 11 alpha
-DRUPAL_VERSION=10@beta make build   # Drupal 10 beta
-DRUPAL_VERSION=11.1 make build      # Drupal 11.1
+DRUPAL_VERSION=11 ahoy build        # Drupal 11
+DRUPAL_VERSION=11@alpha ahoy build  # Drupal 11 alpha
+DRUPAL_VERSION=10@beta ahoy build   # Drupal 10 beta
+DRUPAL_VERSION=11.1 ahoy build      # Drupal 11.1
 ```
 
 The `minimum-stability` setting in the `composer.json` file is
@@ -109,11 +105,11 @@ automatically adjusted to match the specified Drupal version's stability.
 ### Using Drupal project fork
 
 If you want to use a custom fork of `drupal-composer/drupal-project`, set the
-`DRUPAL_PROJECT_REPO` environment variable before running the `make build` or
-`ahoy build` command:
+`DRUPAL_PROJECT_REPO` environment variable before running the `ahoy build`
+command:
 
 ```bash
-DRUPAL_PROJECT_REPO=https://github.com/me/drupal-project-fork.git make build
+DRUPAL_PROJECT_REPO=https://github.com/me/drupal-project-fork.git ahoy build
 ```
 
 ### Patching dependencies
@@ -144,25 +140,25 @@ A one-time login link will be printed to the console.
 
 ## Coding standards
 
-The `make lint` or `ahoy lint` command checks the codebase using multiple
-tools:
+The `ahoy lint` command checks the codebase using multiple tools:
 - PHP code standards checking against `Drupal` and `DrupalPractice` standards.
 - PHP code static analysis with PHPStan.
 - PHP deprecated code analysis and auto-fixing with Drupal Rector.
-- PHP code mess detection with PHPMD.
 - Twig code analysis with Twig CS Fixer.
+- JavaScript code analysis with ESLint.
+- CSS code analysis with Stylelint.
 
 The configuration files for these tools are located in the root of the codebase.
 
 ### Fixing coding standards issues
 
-To fix coding standards issues automatically, run the `make lint-fix` or
-`ahoy lint-fix`. This runs the same tools as `lint` command but with the
-`--fix` option (for the tools that support it).
+To fix coding standards issues automatically, run `ahoy lint-fix`. This runs
+the same tools as `lint` command but with the `--fix` option (for the tools
+that support it).
 
 ## Testing
 
-The `make test` or `ahoy test` command runs the PHPUnit tests for this extension.
+The `ahoy test` command runs the PHPUnit tests for this extension.
 
 The tests are located in the `tests/src` directory. The `phpunit.xml` file
 configures PHPUnit to run the tests. It uses Drupal core's bootstrap file
@@ -171,10 +167,6 @@ the tests.
 
 The `test` command is a wrapper for multiple test commands:
 ```bash
-make test-unit        # Run Unit tests
-make test-kernel      # Run Kernel tests
-make test-functional  # Run Functional tests
-
 ahoy test-unit        # Run Unit tests
 ahoy test-kernel      # Run Kernel tests
 ahoy test-functional  # Run Functional tests
@@ -183,12 +175,9 @@ ahoy test-functional  # Run Functional tests
 ### Running specific tests
 
 You can run specific tests by passing a path to the test file or PHPUnit CLI
-option (`--filter`, `--group`, etc.) to the `make test` or `ahoy test` command:
+option (`--filter`, `--group`, etc.) to the `ahoy test` command:
 
 ```bash
-make test-unit tests/src/Unit/MyUnitTest.php
-make test-unit -- --group=wip
-
 ahoy test-unit tests/src/Unit/MyUnitTest.php
 ahoy test-unit -- --group=wip
 ```
@@ -202,4 +191,4 @@ php -d pcov.directory=.. vendor/bin/phpunit --group=wip
 ```
 
 ---
-_This repository was created using the [Drupal Extension Scaffold](https://github.com/AlexSkrypnyk/integration_report) project template_
+_This repository was created using the [Drupal Extension Scaffold](https://github.com/AlexSkrypnyk/drupal_extension_scaffold) project template_
