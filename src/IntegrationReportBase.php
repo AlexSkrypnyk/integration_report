@@ -212,7 +212,7 @@ abstract class IntegrationReportBase implements IntegrationReportInterface {
     // Encode the results as a json response and return in a postMessage.
     $encoded_js_result = Json::encode($results);
 
-    return '<!DOCTYPE html><head><script type="text/javascript">parent.postMessage(' . $encoded_js_result . ', "*");</script></head><body></body></html>';
+    return '<!DOCTYPE html><head><script type="text/javascript">parent.postMessage(' . $encoded_js_result . ', window.location.origin);</script></head><body></body></html>';
   }
 
   /**
