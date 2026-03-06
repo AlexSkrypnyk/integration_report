@@ -1,0 +1,35 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Drupal\Tests\integration_report\FunctionalJavascript;
+
+/**
+ * Smoke test validating the WebDriver and screenshot pipeline.
+ *
+ * @group integration_report
+ */
+class IntegrationReportSmokeJsTest extends IntegrationReportJsTestBase {
+
+  /**
+   * Tests WebDriver connectivity and screenshot generation.
+   */
+  public function testSmokeWebDriver(): void {
+    // Verify unauthenticated page renders.
+    $this->drupalGet('/user/login');
+    $this->createAutoScreenshot();
+
+    // Create user and log in.
+    $account = $this->drupalCreateUser(['access integration report']);
+    $this->assertNotEmpty($account);
+    $this->drupalLogin($account);
+
+    // Verify authenticated page renders.
+    $this->drupalGet('<front>');
+    $this->createAutoScreenshot();
+
+    // Verify Drupal JavaScript API is available.
+    $this->assertJsCondition('typeof Drupal !== "undefined" && typeof Drupal.behaviors !== "undefined"');
+  }
+
+}

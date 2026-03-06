@@ -7,6 +7,7 @@ namespace Drupal\integration_report\Controller;
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\integration_report\IntegrationReportHelperTrait;
@@ -43,7 +44,8 @@ class IntegrationReportController extends ControllerBase {
   public static function create(ContainerInterface $container): IntegrationReportController {
     // @phpstan-ignore-next-line
     return new static(
-      $container->get('integration_report.report_manager')
+      $container->get('integration_report.report_manager'),
+      $container->get('renderer')
     );
   }
 
@@ -52,9 +54,12 @@ class IntegrationReportController extends ControllerBase {
    *
    * @param \Drupal\integration_report\IntegrationReportManager $report_manager
    *   The report manager.
+   * @param \Drupal\Core\Render\RendererInterface $renderer
+   *   The renderer service.
    */
-  public function __construct(IntegrationReportManager $report_manager) {
+  public function __construct(IntegrationReportManager $report_manager, RendererInterface $renderer) {
     $this->reportManager = $report_manager;
+    $this->renderer = $renderer;
   }
 
   /**
