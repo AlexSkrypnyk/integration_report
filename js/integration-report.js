@@ -3,10 +3,9 @@
  * Integration Report response handlers.
  *
  * phpcs:disable Generic.PHP.UpperCaseConstant.Found.
- * @param {Object} $  - jQuery object.
  */
 
-(function integrationReport($) {
+(function integrationReport() {
   /**
    * Integration Report helpers.
    */
@@ -150,30 +149,53 @@
      */
     statusReceived(passed, className, message, time) {
       const safeClassName = Drupal.checkPlain(String(className));
-      const $statusRow = $(`[data-status-result="${safeClassName}"]`);
-      const $statusDebug = $(`[data-debug-result="${safeClassName}"]`);
+      const statusRow = document.querySelector(
+        `[data-status-result="${safeClassName}"]`,
+      );
+      const statusDebug = document.querySelector(
+        `[data-debug-result="${safeClassName}"]`,
+      );
       let responseText = '';
 
-      $statusRow.addClass('status-report-complete');
+      if (!statusRow) {
+        return;
+      }
+
+      statusRow.classList.add('status-report-complete');
 
       if (time < this.FAILURE_THRESHOLD && passed) {
-        $statusRow.removeClass('warning').addClass('ok');
-        $statusDebug.removeClass('open');
+        statusRow.classList.remove('warning');
+        statusRow.classList.add('ok');
+        if (statusDebug) {
+          statusDebug.classList.remove('open');
+        }
         responseText = 'OK';
       } else if (!passed) {
-        $statusRow.removeClass('warning').addClass('error');
+        statusRow.classList.remove('warning');
+        statusRow.classList.add('error');
         responseText = 'FAIL';
-        $statusRow.addClass('open');
-        $statusDebug.addClass('open');
+        statusRow.classList.add('open');
+        if (statusDebug) {
+          statusDebug.classList.add('open');
+        }
       }
 
       responseText += ` (${Number(time)}ms)`;
 
-      $statusRow.find('.status-report-response').text(responseText);
-      $statusRow
-        .find('.status-report-message')
-        .append(this.sanitizeHtml(message));
-      $statusRow.find('.ajax-progress').remove();
+      const responseEl = statusRow.querySelector('.status-report-response');
+      if (responseEl) {
+        responseEl.textContent = responseText;
+      }
+
+      const messageEl = statusRow.querySelector('.status-report-message');
+      if (messageEl) {
+        messageEl.insertAdjacentHTML('beforeend', this.sanitizeHtml(message));
+      }
+
+      const spinner = statusRow.querySelector('.ajax-progress');
+      if (spinner) {
+        spinner.remove();
+      }
     },
   };
 
@@ -205,11 +227,16 @@
    */
   Drupal.behaviors.integrationReport = {
     attach(context) {
-      $(once('integration-report-open', '[data-status-result]', context)).click(
-        function toggleOpen() {
-          $(this).toggleClass('open');
-        },
+      const elements = once(
+        'integration-report-open',
+        '[data-status-result]',
+        context,
       );
+      elements.forEach(function addClickHandler(el) {
+        el.addEventListener('click', function toggleOpen() {
+          this.classList.toggle('open');
+        });
+      });
     },
   };
-})(jQuery);
+})();
