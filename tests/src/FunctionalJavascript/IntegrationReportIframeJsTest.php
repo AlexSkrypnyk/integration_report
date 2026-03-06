@@ -39,7 +39,7 @@ class IntegrationReportIframeJsTest extends IntegrationReportJsTestBase {
     $this->assertNotNull($row1, 'Report row for Example 1 exists.');
     $this->assertNotNull($row2, 'Report row for Example 2 exists.');
 
-    // Verify rows start with "warning" class.
+    // Verify rows have a status class (may already be resolved by postMessage).
     $this->assertTrue($row1->hasClass('warning') || $row1->hasClass('ok') || $row1->hasClass('error'), 'Row 1 has a status class.');
     $this->assertTrue($row2->hasClass('warning') || $row2->hasClass('ok') || $row2->hasClass('error'), 'Row 2 has a status class.');
 
@@ -83,10 +83,11 @@ class IntegrationReportIframeJsTest extends IntegrationReportJsTestBase {
     $this->assertNotNull($debug2, 'Debug section for Example 2 exists.');
 
     // Verify clicking a row toggles the 'open' class.
+    // Use JavaScript click to avoid WebDriver compatibility issues with D10.
     $this->assertFalse($row1->hasClass('open'), 'Row 1 is not open before click.');
-    $row1->click();
+    $this->getSession()->executeScript('document.querySelector("[data-status-result=IntegrationReportExample1]").click()');
     $this->assertTrue($row1->hasClass('open'), 'Row 1 is open after click.');
-    $row1->click();
+    $this->getSession()->executeScript('document.querySelector("[data-status-result=IntegrationReportExample1]").click()');
     $this->assertFalse($row1->hasClass('open'), 'Row 1 is closed after second click.');
   }
 
