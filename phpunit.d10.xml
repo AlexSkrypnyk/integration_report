@@ -20,9 +20,7 @@
         <ini name="error_reporting" value="24575"/>
         <!-- Do not limit the amount of memory tests take to run. -->
         <ini name="memory_limit" value="-1"/>
-        <!-- Example SIMPLETEST_BASE_URL value: http://localhost -->
         <env name="SIMPLETEST_BASE_URL" value="http://localhost:8000"/>
-        <!-- Example SIMPLETEST_DB value: mysql://username:password@localhost/databasename#table_prefix -->
         <env name="SIMPLETEST_DB" value="sqlite://localhost/drupal_test_extension.sqlite"/>
         <!-- Example BROWSERTEST_OUTPUT_DIRECTORY value: /path/to/webroot/sites/simpletest/browser_output -->
         <!-- In Drupal < 11, the location for the HTML files is hardcoded to
@@ -110,6 +108,7 @@
             <directory>web/themes/custom/*/tests</directory>
             <file>web/modules/custom/integration_report/rector.php</file>
             <file>web/themes/custom/integration_report/rector.php</file>
+            <directory>**/node_modules/**</directory>
         </exclude>
 
         <report>

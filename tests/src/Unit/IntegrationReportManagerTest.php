@@ -7,16 +7,16 @@ namespace Drupal\Tests\integration_report\Unit;
 use Drupal\integration_report\IntegrationReportInterface;
 use Drupal\integration_report\IntegrationReportManager;
 use Drupal\Tests\UnitTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Class IntegrationReportManagerTest.
  *
  * Example test case class.
- *
- * @covers \Drupal\integration_report\IntegrationReportManager
- *
- * @group integration_report
  */
+#[CoversClass(IntegrationReportManager::class)]
+#[Group('integration_report')]
 class IntegrationReportManagerTest extends UnitTestCase {
 
   /**

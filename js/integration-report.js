@@ -2,11 +2,11 @@
  * @file
  * Integration Report response handlers.
  *
- * phpcs:disable Generic.PHP.UpperCaseConstant.Found
+ * phpcs:disable Generic.PHP.UpperCaseConstant.Found.
+ * @param {Object} $  - jQuery object.
  */
 
-(function ($) {
-  'use strict';
+(function integrationReport($) {
   /**
    * Integration Report helpers.
    */
@@ -17,19 +17,18 @@
     /**
      * Update the status table with a status response.
      *
-     * @param passed boolean
-     *   Whether the status is a pass or fail.
-     * @param className string
-     *   The name of the PHP class the status response belongs to.
-     * @param message string
-     *   The messages returned by the status response class callback.
-     * @param time number
-     *   The amount of milliseconds it took to complete the callback.
+     * @param {boolean} passed     - Whether the status is a pass or fail.
+     * @param {string}  className  - The name of the PHP class the status
+     *                             response belongs to.
+     * @param {string}  message    - The messages returned by the status
+     *                             response class callback.
+     * @param {number}  time       - The amount of milliseconds it took to
+     *                             complete the callback.
      */
-    statusReceived: function (passed, className, message, time) {
-      var $statusRow = $('[data-status-result="' + className + '"]'),
-        $statusDebug = $('[data-debug-result="' + className + '"]'),
-        responseText = '';
+    statusReceived(passed, className, message, time) {
+      const $statusRow = $(`[data-status-result="${className}"]`);
+      const $statusDebug = $(`[data-debug-result="${className}"]`);
+      let responseText = '';
 
       $statusRow.addClass('status-report-complete');
 
@@ -37,20 +36,19 @@
         $statusRow.removeClass('warning').addClass('ok');
         $statusDebug.removeClass('open');
         responseText = 'OK';
-      }
-      else if (!passed) {
+      } else if (!passed) {
         $statusRow.removeClass('warning').addClass('error');
         responseText = 'FAIL';
         $statusRow.addClass('open');
         $statusDebug.addClass('open');
       }
 
-      responseText += ' (' + time + 'ms)';
+      responseText += ` (${time}ms)`;
 
       $statusRow.find('.status-report-response').html(responseText);
       $statusRow.find('.status-report-message').append(message);
       $statusRow.find('.ajax-progress').remove();
-    }
+    },
   };
 
   /**
@@ -58,20 +56,31 @@
    *
    * Only fire statusReceived if the message is of the 'IntegrationReport' type.
    */
-  window.addEventListener('message', function (e) {
-    if (e.data.type === 'IntegrationReportHandler') {
-      Drupal.IntegrationReport.statusReceived(e.data.success, e.data.class, e.data.message, e.data.time);
-    }
-  }, false);
+  window.addEventListener(
+    'message',
+    function handleMessage(e) {
+      if (e.data.type === 'IntegrationReportHandler') {
+        Drupal.IntegrationReport.statusReceived(
+          e.data.success,
+          e.data.class,
+          e.data.message,
+          e.data.time,
+        );
+      }
+    },
+    false,
+  );
 
   /**
    * User status behavior for opening and closing status messages.
    */
   Drupal.behaviors.integrationReport = {
-    attach: function (context, settings) {
-      $(once('integration-report-open', '[data-status-result]', context)).click(function () {
-        $(this).toggleClass('open');
-      });
-    }
+    attach(context) {
+      $(once('integration-report-open', '[data-status-result]', context)).click(
+        function toggleOpen() {
+          $(this).toggleClass('open');
+        },
+      );
+    },
   };
-}(jQuery));
+})(jQuery);
