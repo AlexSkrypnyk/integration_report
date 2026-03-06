@@ -7,5 +7,4 @@ integration_report:
     js/integration-report.js: {preprocess: false}
   dependencies:
     - core/drupal
-    - core/jquery
     - core/once
