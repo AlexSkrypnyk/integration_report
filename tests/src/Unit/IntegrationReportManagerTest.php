@@ -11,8 +11,6 @@ use Drupal\Tests\UnitTestCase;
 /**
  * Class IntegrationReportManagerTest.
  *
- * Example test case class.
- *
  * @covers \Drupal\integration_report\IntegrationReportManager
  *
  * @group integration_report
@@ -25,21 +23,67 @@ class IntegrationReportManagerTest extends UnitTestCase {
   public function testIntegrationReportManager(): void {
     $manager = new IntegrationReportManager();
 
-    $integrationReportMock1 = $this->createMock(IntegrationReportInterface::class);
-    $integrationReportMock1->method('info')
+    $integration_report_mock_1 = $this->createMock(IntegrationReportInterface::class);
+    $integration_report_mock_1->method('info')
       ->willReturn(['name' => 'Integration Report 1', 'Description' => 'Integration Report 1 Description']);
-    $manager->addReport($integrationReportMock1, 1);
+    $manager->addReport($integration_report_mock_1, 1);
 
-    $integrationReportMock2 = $this->createMock(IntegrationReportInterface::class);
-    $integrationReportMock2->method('info')
+    $integration_report_mock_2 = $this->createMock(IntegrationReportInterface::class);
+    $integration_report_mock_2->method('info')
       ->willReturn(['name' => 'Integration Report 2', 'Description' => 'Integration Report 2 Description']);
-    $manager->addReport($integrationReportMock2, 5);
+    $manager->addReport($integration_report_mock_2, 5);
 
-    $this->assertSame($integrationReportMock2, $manager->findReport($integrationReportMock2::class));
+    $this->assertSame($integration_report_mock_2, $manager->findReport($integration_report_mock_2::class));
     $this->assertEquals(2, count($manager->getReports()));
-    $this->assertSame($integrationReportMock2, $manager->getReports()[0]);
-    $this->assertSame($integrationReportMock1, $manager->getReports()[1]);
+    $this->assertSame($integration_report_mock_2, $manager->getReports()[0]);
+    $this->assertSame($integration_report_mock_1, $manager->getReports()[1]);
 
+  }
+
+  /**
+   * Test that findReport returns NULL when no report matches.
+   */
+  public function testFindReportNotFound(): void {
+    $manager = new IntegrationReportManager();
+    $mock = $this->createMock(IntegrationReportInterface::class);
+    $manager->addReport($mock);
+
+    $this->assertNull($manager->findReport('NonExistentReportName'));
+  }
+
+  /**
+   * Test that getReports returns an empty array when no reports are added.
+   */
+  public function testGetReportsEmpty(): void {
+    $manager = new IntegrationReportManager();
+    $this->assertSame([], $manager->getReports());
+  }
+
+  /**
+   * Test that addReport returns the manager instance for chaining.
+   */
+  public function testAddReportFluent(): void {
+    $manager = new IntegrationReportManager();
+    $mock = $this->createMock(IntegrationReportInterface::class);
+
+    $this->assertSame($manager, $manager->addReport($mock));
+    $this->assertSame($manager, $manager->addReport($mock, 10));
+  }
+
+  /**
+   * Test that addReport with the default priority places the report last.
+   */
+  public function testAddReportDefaultPriority(): void {
+    $manager = new IntegrationReportManager();
+    $high = $this->createMock(IntegrationReportInterface::class);
+    $low = $this->createMock(IntegrationReportInterface::class);
+
+    $manager->addReport($high, 10);
+    $manager->addReport($low);
+
+    $reports = $manager->getReports();
+    $this->assertSame($high, $reports[0]);
+    $this->assertSame($low, $reports[1]);
   }
 
 }
