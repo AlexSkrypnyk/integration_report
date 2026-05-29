@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
  *   - { name: integration_report }
  * @endcode
  */
-// @codingStandardsIgnoreStart
+// phpcs:disable
 class MyModuleExampleIntegrationReportBase extends IntegrationReportBase {
 
   /**
@@ -112,3 +112,4 @@ class MyModuleExampleIntegrationReportBase extends IntegrationReportBase {
   }
 
 }
+// phpcs:enable
