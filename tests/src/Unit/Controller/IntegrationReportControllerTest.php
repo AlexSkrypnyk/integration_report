@@ -10,13 +10,14 @@ use Drupal\integration_report\Controller\IntegrationReportController;
 use Drupal\integration_report\IntegrationReportInterface;
 use Drupal\integration_report\IntegrationReportManager;
 use Drupal\Tests\UnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class IntegrationReportControllerTest.
+ * Tests for the IntegrationReportController jsCallback and create factory.
  *
  * @covers \Drupal\integration_report\Controller\IntegrationReportController
  *
@@ -27,7 +28,7 @@ class IntegrationReportControllerTest extends UnitTestCase {
   /**
    * Mock logger captured by the test container.
    */
-  protected LoggerInterface $logger;
+  protected LoggerInterface&MockObject $logger;
 
   /**
    * {@inheritdoc}
@@ -82,8 +83,8 @@ class IntegrationReportControllerTest extends UnitTestCase {
     $response = $controller->jsCallback('Missing', Request::create('/'));
 
     $this->assertSame(400, $response->getStatusCode());
-    $this->assertStringContainsString('Missing', $response->getContent());
-    $this->assertStringContainsString('no-cache', $response->headers->get('Cache-Control'));
+    $this->assertStringContainsString('Missing', (string) $response->getContent());
+    $this->assertStringContainsString('no-cache', (string) $response->headers->get('Cache-Control'));
   }
 
   /**

@@ -12,7 +12,7 @@ use Drupal\integration_report\IntegrationReportBase;
 use Drupal\Tests\UnitTestCase;
 
 /**
- * Class IntegrationReportTest.
+ * Tests for the abstract IntegrationReportBase class and helper trait.
  *
  * @covers \Drupal\integration_report\IntegrationReportBase
  * @covers \Drupal\integration_report\IntegrationReportHelperTrait

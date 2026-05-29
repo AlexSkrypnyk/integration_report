@@ -9,7 +9,7 @@ use Drupal\integration_report\IntegrationReportManager;
 use Drupal\Tests\UnitTestCase;
 
 /**
- * Class IntegrationReportManagerTest.
+ * Tests for the IntegrationReportManager service.
  *
  * @covers \Drupal\integration_report\IntegrationReportManager
  *

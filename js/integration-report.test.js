@@ -5,7 +5,7 @@
  * Run with `ahoy test-js` or `npm test` from the build/ directory.
  */
 
-/* eslint-disable no-undef, func-names, prefer-arrow-callback */
+/* eslint-disable no-undef, func-names, prefer-arrow-callback, global-require, import/extensions, import/no-unresolved */
 
 describe('Drupal.IntegrationReport', function () {
   beforeAll(function () {
@@ -154,9 +154,9 @@ describe('Drupal.IntegrationReport', function () {
       expect(row.classList.contains('ok')).toBe(true);
       expect(row.classList.contains('warning')).toBe(false);
       expect(row.classList.contains('status-report-complete')).toBe(true);
-      expect(
-        row.querySelector('.status-report-response').textContent,
-      ).toBe('OK (120ms)');
+      expect(row.querySelector('.status-report-response').textContent).toBe(
+        'OK (120ms)',
+      );
     });
 
     test('closes the debug section on success', function () {
@@ -178,9 +178,9 @@ describe('Drupal.IntegrationReport', function () {
       expect(row.classList.contains('error')).toBe(true);
       expect(row.classList.contains('open')).toBe(true);
       expect(row.classList.contains('warning')).toBe(false);
-      expect(
-        row.querySelector('.status-report-response').textContent,
-      ).toBe('FAIL (75ms)');
+      expect(row.querySelector('.status-report-response').textContent).toBe(
+        'FAIL (75ms)',
+      );
       expect(debug.classList.contains('open')).toBe(true);
     });
 
