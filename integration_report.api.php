@@ -21,6 +21,8 @@ use Symfony\Component\HttpFoundation\Response;
  * tags:
  *   - { name: integration_report }
  * @endcode
+ *
+ * @codeCoverageIgnore
  */
 // phpcs:disable
 class MyModuleExampleIntegrationReportBase extends IntegrationReportBase {
