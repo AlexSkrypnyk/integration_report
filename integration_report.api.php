@@ -112,3 +112,4 @@ class MyModuleExampleIntegrationReportBase extends IntegrationReportBase {
   }
 
 }
+// phpcs:enable
