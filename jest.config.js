@@ -12,15 +12,28 @@ dirs.forEach((dir) => {
     fs.readdirSync(dir).forEach((name) => {
       const jsDir = path.resolve(dir, name, 'js');
       if (fs.existsSync(jsDir)) {
-        roots.push(jsDir);
+        roots.push(fs.realpathSync(jsDir));
       }
     });
   }
 });
 
 module.exports = {
+  // V8 coverage tracks files outside rootDir only when rootDir contains them,
+  // so anchor rootDir at the project root rather than the build directory.
+  rootDir: path.resolve(__dirname, '..'),
   testEnvironment: 'jsdom',
   roots,
   testMatch: ['**/*.test.js'],
   testPathIgnorePatterns: ['/node_modules/', '/vendor/'],
+  collectCoverage: true,
+  coverageProvider: 'v8',
+  coveragePathIgnorePatterns: ['/node_modules/', '/vendor/', '\\.test\\.js$'],
+  coverageDirectory: path.resolve(__dirname, '../.logs/coverage/jest'),
+  coverageReporters: [
+    'text',
+    ['html', { subdir: '.coverage-html' }],
+    ['cobertura', { file: 'cobertura.xml' }],
+  ],
+  modulePaths: [path.resolve(__dirname, 'node_modules')],
 };
