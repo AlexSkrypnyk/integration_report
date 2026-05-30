@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
  * Class IntegrationReportExample1.
  *
  * Example for the IntegrationReport module.
+ *
+ * @codeCoverageIgnore
  */
 class IntegrationReportExample1 extends IntegrationReportBase {
 
