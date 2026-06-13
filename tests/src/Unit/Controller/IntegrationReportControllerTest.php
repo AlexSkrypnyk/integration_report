@@ -48,9 +48,7 @@ class IntegrationReportControllerTest extends UnitTestCase {
     $path_validator->method('getUrlIfValidWithoutAccessCheck')->willReturn(FALSE);
 
     $unrouted_url_assembler = $this->createMock(UnroutedUrlAssemblerInterface::class);
-    $unrouted_url_assembler->method('assemble')->willReturnCallback(function (string $uri): string {
-      return '/' . str_replace(['internal:/', 'base:'], '', $uri);
-    });
+    $unrouted_url_assembler->method('assemble')->willReturnCallback(fn(string $uri): string => '/' . str_replace(['internal:/', 'base:'], '', $uri));
 
     $container = new ContainerBuilder();
     $container->set('logger.factory', $logger_factory);
@@ -125,19 +123,20 @@ class IntegrationReportControllerTest extends UnitTestCase {
    */
   public function testCreate(): void {
     $manager = $this->createMock(IntegrationReportManager::class);
+    $manager->method('getReports')->willReturn([]);
     $renderer = $this->createMock(RendererInterface::class);
 
     $container = $this->createMock(ContainerInterface::class);
-    $container->method('get')->willReturnCallback(function (string $id) use ($manager, $renderer) {
-      return match ($id) {
-        'integration_report.report_manager' => $manager,
-        'renderer' => $renderer,
-        default => NULL,
-      };
-    });
+    $container->method('get')->willReturnCallback(fn(string $id): ?MockObject => match ($id) {
+      'integration_report.report_manager' => $manager,
+      'renderer' => $renderer,
+      default => NULL,
+    }
+);
 
     $controller = IntegrationReportController::create($container);
-    $this->assertInstanceOf(IntegrationReportController::class, $controller);
+    $table = $controller->overview();
+    $this->assertSame('table', $table['#theme']);
   }
 
   /**

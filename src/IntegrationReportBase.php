@@ -14,8 +14,6 @@ use Drupal\Core\StringTranslation\TranslationInterface;
  * Class IntegrationReport.
  *
  * Extend this class in your custom implementation.
- *
- * @SuppressWarnings(PHPMD.StaticAccess)
  */
 abstract class IntegrationReportBase implements IntegrationReportInterface {
 
@@ -38,15 +36,11 @@ abstract class IntegrationReportBase implements IntegrationReportInterface {
 
   /**
    * Javascript file for the report, set by info().
-   *
-   * @var string|null
    */
   protected ?string $js = NULL;
 
   /**
    * Whether to use the callback in the report, set by info().
-   *
-   * @var bool
    */
   protected bool $useCallback = FALSE;
 
@@ -54,8 +48,6 @@ abstract class IntegrationReportBase implements IntegrationReportInterface {
    * Whether the status callback needs to be performed over https.
    *
    * If NULL, then the current protocol will be used.
-   *
-   * @var bool|null
    */
   protected ?bool $secureCallback = NULL;
 
@@ -76,7 +68,7 @@ abstract class IntegrationReportBase implements IntegrationReportInterface {
     $this->renderer = $renderer;
 
     $info = $this->info();
-    if ($info) {
+    if ($info !== []) {
       $this->name = $info['name'] ?? '';
       $this->description = $info['description'] ?? '';
       $this->js = $info['js'] ?? NULL;
@@ -175,8 +167,6 @@ abstract class IntegrationReportBase implements IntegrationReportInterface {
    *
    * @throws \ReflectionException
    * @throws \Exception
-   *
-   * @SuppressWarnings(PHPMD.ElseExpression)
    */
   public function menuCallback(): string {
     // Log the time in which the menu callback php task begun.

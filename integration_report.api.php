@@ -82,7 +82,7 @@ class MyModuleExampleIntegrationReportBase extends IntegrationReportBase {
     $response = \Drupal::httpClient()->get($url, ['headers' => ['Accept' => 'text/plain']]);
     $messages = [];
     // Check for a 200 response and the word 'domain' in the response.
-    if ($response->getStatusCode() == Response::HTTP_OK && strpos($response->getBody()->getContents(), 'domain') !== FALSE) {
+    if ($response->getStatusCode() == Response::HTTP_OK && str_contains($response->getBody()->getContents(), 'domain')) {
       $success = TRUE;
       $messages[] = $this->t('@url was retrieved successfully.', [
         '@url' => $url,

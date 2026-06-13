@@ -52,8 +52,8 @@ class IntegrationReportIframeJsTest extends IntegrationReportJsTestBase {
     foreach ($iframes as $iframe) {
       $iframe_srcs[] = $iframe->getAttribute('src');
     }
-    $this->assertNotEmpty(array_filter($iframe_srcs, fn($src) => str_contains($src, '/admin/reports/integrations/IntegrationReportExample1')));
-    $this->assertNotEmpty(array_filter($iframe_srcs, fn($src) => str_contains($src, '/admin/reports/integrations/IntegrationReportExample2')));
+    $this->assertNotEmpty(array_filter($iframe_srcs, fn(?string $src): bool => str_contains((string) $src, '/admin/reports/integrations/IntegrationReportExample1')));
+    $this->assertNotEmpty(array_filter($iframe_srcs, fn(?string $src): bool => str_contains((string) $src, '/admin/reports/integrations/IntegrationReportExample2')));
 
     // Wait for postMessage responses to update the table rows.
     // Rows get 'status-report-complete' class when postMessage is received.
