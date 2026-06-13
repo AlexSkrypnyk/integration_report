@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\integration_report\Controller;
 
+use Drupal\integration_report\IntegrationReportInterface;
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Controller\ControllerBase;
@@ -22,21 +23,11 @@ use Symfony\Component\HttpFoundation\Response;
  * Controller for integration report.
  *
  * @package Drupal\dblog\Controller
- *
- * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
- * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class IntegrationReportController extends ControllerBase {
 
   use IntegrationReportHelperTrait;
   use StringTranslationTrait;
-
-  /**
-   * The report manager.
-   *
-   * @var \Drupal\integration_report\IntegrationReportManager
-   */
-  protected IntegrationReportManager $reportManager;
 
   /**
    * {@inheritdoc}
@@ -52,13 +43,15 @@ class IntegrationReportController extends ControllerBase {
   /**
    * IntegrationReportController constructor.
    *
-   * @param \Drupal\integration_report\IntegrationReportManager $report_manager
+   * @param \Drupal\integration_report\IntegrationReportManager $reportManager
    *   The report manager.
    * @param \Drupal\Core\Render\RendererInterface $renderer
    *   The renderer service.
    */
-  public function __construct(IntegrationReportManager $report_manager, RendererInterface $renderer) {
-    $this->reportManager = $report_manager;
+  public function __construct(
+    protected IntegrationReportManager $reportManager,
+    RendererInterface $renderer,
+  ) {
     $this->renderer = $renderer;
   }
 
@@ -187,10 +180,8 @@ class IntegrationReportController extends ControllerBase {
    *
    * @return \Symfony\Component\HttpFoundation\Response
    *   The response object.
-   *
-   * @SuppressWarnings(PHPMD.UnusedFormalParameter)
    */
-  public function jsCallback($report_class, Request $request): Response {
+  public function jsCallback(string $report_class, Request $request): Response {
     // Sanitise class name.
     $class = Html::escape($report_class);
 
@@ -199,7 +190,7 @@ class IntegrationReportController extends ControllerBase {
     $headers['Cache-Control'] = 'no-cache';
     $headers['Pragma'] = 'no-cache';
     $headers['Expires'] = '-1';
-    if ($report) {
+    if ($report instanceof IntegrationReportInterface) {
       $result = $report->menuCallback();
 
       return new Response($result, 200, $headers);

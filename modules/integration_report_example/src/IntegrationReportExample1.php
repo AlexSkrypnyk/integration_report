@@ -23,15 +23,20 @@ class IntegrationReportExample1 extends IntegrationReportBase {
   use StringTranslationTrait;
 
   /**
-   * HTTP Client.
+   * IntegrationReportExample1 constructor.
+   *
+   * @param \Drupal\Core\StringTranslation\TranslationInterface $translation
+   *   The string translation service.
+   * @param \Drupal\Core\Render\RendererInterface $renderer
+   *   The renderer service.
+   * @param \GuzzleHttp\ClientInterface $client
+   *   The HTTP client.
    */
-  protected ClientInterface $client;
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __construct(TranslationInterface $translation, RendererInterface $renderer, ClientInterface $client) {
-    $this->client = $client;
+  public function __construct(
+    TranslationInterface $translation,
+    RendererInterface $renderer,
+    protected ClientInterface $client,
+  ) {
     parent::__construct($translation, $renderer);
   }
 
@@ -76,8 +81,6 @@ class IntegrationReportExample1 extends IntegrationReportBase {
    *       A list of string messages to be added to the response information
    *       for the test.
    *
-   * @SuppressWarnings(PHPMD.ElseExpression)
-   *
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
   public function callback(): array {
@@ -88,7 +91,7 @@ class IntegrationReportExample1 extends IntegrationReportBase {
     $response = $this->client->request('GET', $url, ['headers' => ['Accept' => 'text/plain']]);
     // Check for a 200 response and the word 'domain' in the response.
     $messages = [];
-    if ($response->getStatusCode() == Response::HTTP_OK && strpos($response->getBody()->getContents(), 'domain') !== FALSE) {
+    if ($response->getStatusCode() === Response::HTTP_OK && str_contains($response->getBody()->getContents(), 'domain')) {
       $success = TRUE;
       $messages[] = $this->t('@url was retrieved successfully.', [
         '@url' => $url,

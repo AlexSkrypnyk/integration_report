@@ -44,7 +44,7 @@ class IntegrationReportManager implements IntegrationReportManagerInterface {
   public function findReport(string $class): ?IntegrationReportInterface {
     $reports = $this->getReports();
     foreach ($reports as $report) {
-      if (strpos(static::getShortClassName($report), $class) !== FALSE) {
+      if (str_contains(static::getShortClassName($report), $class)) {
         return $report;
       }
     }
