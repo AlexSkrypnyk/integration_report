@@ -12,15 +12,15 @@ dirs.forEach((dir) => {
     fs.readdirSync(dir).forEach((name) => {
       const jsDir = path.resolve(dir, name, 'js');
       if (fs.existsSync(jsDir)) {
-        roots.push(fs.realpathSync(jsDir));
+        roots.push(jsDir);
       }
     });
   }
 });
 
 module.exports = {
-  // V8 coverage tracks files outside rootDir only when rootDir contains them,
-  // so anchor rootDir at the project root rather than the build directory.
+  // V8 tracks files outside rootDir only when rootDir contains them, so
+  // anchor at the project root rather than the build directory.
   rootDir: path.resolve(__dirname, '..'),
   testEnvironment: 'jsdom',
   roots,
