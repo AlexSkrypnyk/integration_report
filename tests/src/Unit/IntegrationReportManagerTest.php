@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\integration_report\Unit;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drupal\integration_report\IntegrationReportInterface;
 use Drupal\integration_report\IntegrationReportManager;
 use Drupal\Tests\UnitTestCase;
@@ -15,6 +16,7 @@ use Drupal\Tests\UnitTestCase;
  *
  * @group integration_report
  */
+#[Group('integration_report')]
 class IntegrationReportManagerTest extends UnitTestCase {
 
   /**

@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\integration_report\FunctionalJavascript;
 
+use PHPUnit\Framework\Attributes\Group;
+
 /**
  * Tests iframe-based integration report status flow.
  *
  * @group integration_report
  */
+#[Group('integration_report')]
 class IntegrationReportIframeJsTest extends IntegrationReportJsTestBase {
 
   /**

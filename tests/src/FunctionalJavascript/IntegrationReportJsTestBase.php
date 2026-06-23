@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\integration_report\FunctionalJavascript;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 
 /**
@@ -11,6 +12,7 @@ use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
  *
  * @group integration_report
  */
+#[Group('integration_report')]
 abstract class IntegrationReportJsTestBase extends WebDriverTestBase {
 
   /**

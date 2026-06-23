@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\integration_report\Functional;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drupal\Tests\BrowserTestBase;
 
 /**
@@ -11,6 +12,7 @@ use Drupal\Tests\BrowserTestBase;
  *
  * @group integration_report
  */
+#[Group('integration_report')]
 class IntegrationReportTest extends BrowserTestBase {
 
   /**

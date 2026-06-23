@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\integration_report\Unit;
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
@@ -19,6 +21,7 @@ use Drupal\Tests\UnitTestCase;
  *
  * @group integration_report
  */
+#[Group('integration_report')]
 class IntegrationReportTest extends UnitTestCase {
 
   /**
@@ -43,6 +46,7 @@ class IntegrationReportTest extends UnitTestCase {
    *
    * @dataProvider dataProviderSetters
    */
+  #[DataProvider('dataProviderSetters')]
   public function testSetters(string $setter, string $getter, mixed $value): void {
     $translation = $this->createMock(TranslationInterface::class);
     $renderer = $this->createMock(RendererInterface::class);
