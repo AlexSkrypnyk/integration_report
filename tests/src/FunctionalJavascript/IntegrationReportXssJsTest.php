@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\integration_report\FunctionalJavascript;
 
+use PHPUnit\Framework\Attributes\Group;
+
 /**
  * Tests XSS protection in integration report postMessage handling.
  *
  * @group integration_report
  */
+#[Group('integration_report')]
 class IntegrationReportXssJsTest extends IntegrationReportJsTestBase {
 
   /**

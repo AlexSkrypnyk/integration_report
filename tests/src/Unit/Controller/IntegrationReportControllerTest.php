@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\integration_report\Unit\Controller;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Path\PathValidatorInterface;
 use Drupal\Core\Render\Markup;
@@ -27,6 +28,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @group integration_report
  */
+#[Group('integration_report')]
 class IntegrationReportControllerTest extends UnitTestCase {
 
   /**
