@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\integration_report\FunctionalJavascript;
 
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
@@ -12,6 +13,7 @@ use PHPUnit\Framework\Attributes\Group;
  * @group integration_report
  */
 #[Group('integration_report')]
+#[RunTestsInSeparateProcesses]
 class IntegrationReportXssJsTest extends IntegrationReportJsTestBase {
 
   /**
