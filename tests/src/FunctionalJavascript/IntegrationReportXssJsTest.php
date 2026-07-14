@@ -24,7 +24,6 @@ class IntegrationReportXssJsTest extends IntegrationReportJsTestBase {
    */
   public function testPostMessageXssSanitization(): void {
     $account = $this->drupalCreateUser(['access integration report']);
-    $this->assertNotFalse($account);
     $this->drupalLogin($account);
 
     $this->drupalGet('/admin/reports/integrations');
@@ -67,7 +66,6 @@ class IntegrationReportXssJsTest extends IntegrationReportJsTestBase {
    */
   public function testPostMessageOriginValidation(): void {
     $account = $this->drupalCreateUser(['access integration report']);
-    $this->assertNotFalse($account);
     $this->drupalLogin($account);
 
     $this->drupalGet('/admin/reports/integrations');
@@ -103,7 +101,6 @@ class IntegrationReportXssJsTest extends IntegrationReportJsTestBase {
    */
   public function testResponseTextSanitization(): void {
     $account = $this->drupalCreateUser(['access integration report']);
-    $this->assertNotFalse($account);
     $this->drupalLogin($account);
 
     $this->drupalGet('/admin/reports/integrations');
@@ -137,7 +134,6 @@ class IntegrationReportXssJsTest extends IntegrationReportJsTestBase {
    */
   public function testSafeHtmlPreserved(): void {
     $account = $this->drupalCreateUser(['access integration report']);
-    $this->assertNotFalse($account);
     $this->drupalLogin($account);
 
     $this->drupalGet('/admin/reports/integrations');
@@ -173,7 +169,6 @@ class IntegrationReportXssJsTest extends IntegrationReportJsTestBase {
    */
   public function testEventHandlerAttributesStripped(): void {
     $account = $this->drupalCreateUser(['access integration report']);
-    $this->assertNotFalse($account);
     $this->drupalLogin($account);
 
     $this->drupalGet('/admin/reports/integrations');
