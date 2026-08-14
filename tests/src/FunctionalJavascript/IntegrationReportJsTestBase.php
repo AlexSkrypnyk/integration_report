@@ -29,11 +29,17 @@ abstract class IntegrationReportJsTestBase extends WebDriverTestBase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    // Override SIMPLETEST_BASE_URL for Docker-based Selenium: Chrome inside
-    // the container cannot reach 'localhost' on the host machine.
     $port = getenv('WEBSERVER_PORT') ?: '8000';
-    $host = PHP_OS_FAMILY === 'Darwin' ? 'host.docker.internal' : '172.17.0.1';
+    $host = 'localhost';
+
+    if (getenv('WEBDRIVER_BACKEND') === 'selenium') {
+      // Chrome runs inside a Docker container and cannot reach 'localhost' on
+      // the host machine.
+      $host = PHP_OS_FAMILY === 'Darwin' ? 'host.docker.internal' : '172.17.0.1';
+    }
+
     putenv('SIMPLETEST_BASE_URL=http://' . $host . ':' . $port);
+
     parent::setUp();
   }
 
