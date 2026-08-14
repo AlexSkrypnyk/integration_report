@@ -32,7 +32,7 @@ re-assembling the codebase.
 ### Drupal versions
 
 The Drupal version used for the codebase assembly is determined by the
-`DRUPAL_VERSION` variable and defaults to the latest stable version.
+`DRUPAL_VERSION` variable and defaults to Drupal 11.
 
 You can specify a different version by setting the `DRUPAL_VERSION` environment
 variable before running the `ahoy build` command:
@@ -169,12 +169,4 @@ option (`--filter`, `--group`, etc.) to the `ahoy test` command:
 ```bash
 ahoy test-unit tests/src/Unit/MyUnitTest.php
 ahoy test-unit -- --group=wip
-```
-
-You may also run tests using the `phpunit` command directly:
-
-```bash
-cd build
-php -d pcov.directory=.. vendor/bin/phpunit tests/src/Unit/MyUnitTest.php
-php -d pcov.directory=.. vendor/bin/phpunit --group=wip
 ```
