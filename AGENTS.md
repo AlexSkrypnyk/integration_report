@@ -18,8 +18,9 @@ Run each tool through its `ahoy` wrapper, never the binary directly:
 - **Rector**: `ahoy lint` (dry-run) / `ahoy lint-fix` - never `vendor/bin/rector`.
 - **Twig CS Fixer**: `ahoy lint` / `ahoy lint-fix` - never `vendor/bin/twig-cs-fixer`.
 - **ESLint / Stylelint**: `ahoy lint` / `ahoy lint-fix` - never `npx eslint` or `npx stylelint`.
+- **CSpell**: `ahoy lint` - never `npx cspell`.
 - **PHPUnit**: `ahoy test` / `ahoy test-unit` / `ahoy test-kernel` / `ahoy test-functional` - never `vendor/bin/phpunit`.
-- **Jest**: `ahoy test-js` - never `npx jest`.
+- **Jest**: `ahoy test-javascript` - never `npx jest`.
 - **Drush**: `ahoy drush <command>` - never `build/vendor/bin/drush` directly.
 
 ### Build and Environment Management
@@ -42,10 +43,10 @@ Run each tool through its `ahoy` wrapper, never the binary directly:
 - `ahoy test-unit` - Run unit tests only
 - `ahoy test-kernel` - Run kernel tests only
 - `ahoy test-functional` - Run functional tests only
-- `ahoy test-functional-javascript` - Run FunctionalJavascript tests (requires Selenium)
-- `ahoy test-js` - Run JavaScript unit tests (Jest)
-- `ahoy selenium-start` - Start Selenium container
-- `ahoy selenium-stop` - Stop Selenium container
+- `ahoy test-functional-javascript` - Run FunctionalJavascript tests (uses the local Chrome by default; set `WEBDRIVER_BACKEND=selenium` for Docker)
+- `ahoy test-javascript` - Run JavaScript unit tests with Jest (alias: `ahoy test-js`)
+- `ahoy browser-start` - Start the browser for FunctionalJavascript tests (local Chrome by default; set `WEBDRIVER_BACKEND=selenium` for Docker)
+- `ahoy browser-stop` - Stop the browser
 
 ### Drupal Commands
 
@@ -64,7 +65,7 @@ Run each tool through its `ahoy` wrapper, never the binary directly:
 - `config/schema/` - Configuration schema definitions
 - `build/` - Assembled Drupal codebase (symlinked extension)
 - `.devtools/` - Build and deployment scripts used by CI
-- `scripts/` - Custom post-assemble (`assemble-*.sh`) and post-provision (`provision-*.sh`) hooks. Run automatically at the end of each phase in lexicographic order; non-zero exit aborts the parent. Excluded from distribution archives via `.gitattributes`
+- `scripts/` - Custom lifecycle hooks: post-assemble (`assemble-*.sh`), post-provision (`provision-*.sh`), post-start (`start-*.sh`), and pre-stop (`stop-*.sh`). Run automatically during each phase in lexicographic order; non-zero exit aborts the parent. Excluded from distribution archives via `.gitattributes`
 
 **Template Files (before init):**
 - `integration_report.*` - Template extension files
@@ -82,7 +83,10 @@ Run each tool through its `ahoy` wrapper, never the binary directly:
 - `DRUPAL_VERSION` - Target Drupal version (e.g., `10`, `11`, `11@alpha`)
 - `WEBSERVER_HOST` - Development server host (default: localhost)
 - `WEBSERVER_PORT` - Development server port. Auto-discovered from range 8000-8099 and written to `.env` if not already set
+- `WEBDRIVER_BACKEND` - FunctionalJavascript WebDriver backend: `chromedriver` (default, drives the locally installed Chrome with no Docker) or `selenium` (Docker container)
+- `WEBDRIVER_PORT` - Port for the WebDriver endpoint (both backends). Auto-discovered from 4444 and written to `.env` if not already set, so several projects can run FunctionalJavascript tests simultaneously
 - `GITHUB_TOKEN` - GitHub API token to avoid rate limits
+- `DEBUG` - Set to `1` to stream the full output of the underlying commands (Composer, npm, Drush). By default this output is suppressed and shown only when a command fails
 
 ## Development Workflow
 
@@ -95,6 +99,7 @@ Run each tool through its `ahoy` wrapper, never the binary directly:
 
 ## Code Quality Tools
 
+- **CSpell**: Spell checking across the codebase (config at `.cspell.json`)
 - **PHPCS**: Drupal and DrupalPractice standards
 - **PHPStan**: Static analysis with Drupal extensions
 - **Rector**: Automated refactoring and deprecation fixes
@@ -103,8 +108,7 @@ Run each tool through its `ahoy` wrapper, never the binary directly:
 ## CI/CD Support
 
 - **GitHub Actions**: `.github/workflows/test.yml` and deployment
-- **CircleCI**: `.circleci/config.yml` configuration
-- **Matrix testing**: PHP 8.2-8.5, Drupal 10-11
+- **Matrix testing**: PHP 8.3-8.5, Drupal 10-11
 - **Automated deployment**: Mirror to Drupal.org on release
 
 ## Important Notes

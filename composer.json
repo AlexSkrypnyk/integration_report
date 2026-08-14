@@ -22,6 +22,6 @@
         "source": "https://git.drupalcode.org/project/integration_report"
     },
     "require": {
-        "php": ">=8.2"
+        "php": ">=8.3"
     }
 }
