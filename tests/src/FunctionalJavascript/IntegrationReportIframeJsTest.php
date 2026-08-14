@@ -26,6 +26,7 @@ class IntegrationReportIframeJsTest extends IntegrationReportJsTestBase {
    */
   public function testIframeStatusFlow(): void {
     $account = $this->drupalCreateUser(['access integration report']);
+    $this->assertNotEmpty($account);
     $this->drupalLogin($account);
 
     $this->drupalGet('/admin/reports/integrations');
