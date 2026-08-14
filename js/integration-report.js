@@ -56,7 +56,10 @@
      * @return {string} The sanitized HTML string.
      */
     sanitizeHtml(html) {
-      const container = document.createElement('div');
+      // Parse into a document with no browsing context. A detached element
+      // belonging to the live document still loads 'src' resources, which
+      // fires handlers such as 'onerror' before the tags below are stripped.
+      const container = document.implementation.createHTMLDocument('').body;
       container.innerHTML = String(html);
 
       const allowedTags = this.ALLOWED_TAGS;
@@ -93,7 +96,7 @@
               if (dangerous.indexOf(tag) !== -1) {
                 node.removeChild(child);
               } else {
-                // For non-dangerous but unallowed tags, keep text content.
+                // For non-dangerous but disallowed tags, keep text content.
                 while (child.firstChild) {
                   node.insertBefore(child.firstChild, child);
                 }
