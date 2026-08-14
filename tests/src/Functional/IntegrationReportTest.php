@@ -38,9 +38,9 @@ class IntegrationReportTest extends BrowserTestBase {
     $this->drupalGet('admin/reports/integrations/IntegrationReportExample2');
     $this->assertSession()->statusCodeEquals(403);
 
-    $acccount = $this->drupalCreateUser(['access integration report']);
-    $this->assertNotEmpty($acccount);
-    $this->drupalLogin($acccount);
+    $account = $this->drupalCreateUser(['access integration report']);
+    $this->assertNotEmpty($account);
+    $this->drupalLogin($account);
 
     $this->drupalGet('/admin/reports/integrations');
     $this->assertSession()->statusCodeEquals(200);
