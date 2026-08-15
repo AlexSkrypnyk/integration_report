@@ -5,7 +5,7 @@ the site, check coding standards, and run the tests for this extension.
 
 ## Local development
 
-1. Install PHP with SQLite support and Composer
+1. Install PHP 8.3 or newer with SQLite support and Composer
 2. Clone this repository
 3. Run `ahoy build`
 
